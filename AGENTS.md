@@ -1,81 +1,86 @@
 # AGENTS.md
 
-## Project purpose
+## 项目用途
 
-This repository is the personal GitHub Pages site for JinZhe Li / Golden Philosophy.
-It presents public projects, research interests, and current research work at
-<https://lijinzh.github.io/>.
+这是 JinZhe Li / Golden Philosophy 的个人 GitHub Pages 主页仓库，线上地址为：
+<https://lijinzh.github.io/>。
 
-## Repository structure
+主页用于展示个人开源项目、感兴趣的研究方向，以及目前正在开展的研究与实验。
 
-- `index.html`: page content, metadata, navigation, and project links.
-- `styles.css`: responsive layout and the 8-bit neon / pixel visual system.
-- `script.js`: navigation, project filtering, and small interface behaviors.
-- `assets/`: local artwork, favicon, and project screenshots.
-- `tests/site.test.mjs`: dependency-free structural and local-asset checks.
-- `.github/workflows/ci.yml`: GitHub Actions site checks.
-- `.nojekyll`: keeps GitHub Pages on the static-file publishing path.
+## 仓库结构
 
-## Working rules
+- `index.html`：页面内容、元数据、导航和项目链接。
+- `styles.css`：响应式布局，以及 8-bit 霓虹像素风视觉系统。
+- `script.js`：移动端导航、项目筛选和其他轻量交互。
+- `assets/`：网站图标、像素风图片和项目截图等本地素材。
+- `tests/site.test.mjs`：不依赖第三方库的页面结构与本地资源检查。
+- `.github/workflows/ci.yml`：GitHub Actions 自动检查配置。
+- `.nojekyll`：让 GitHub Pages 直接按照静态文件方式发布网站。
 
-- Keep the site dependency-free unless a new dependency is clearly justified.
-- Preserve the current visual direction: dark neon research-lab sections combined
-  with warm paper-colored project and research sections.
-- Prefer sharp pixel borders, crisp artwork, cyan/pink/lime accents, and readable
-  Chinese copy. Avoid generic corporate cards or unrelated stock photography.
-- Use real project information and working public links. Do not invent metrics,
-  affiliations, research results, or project status.
-- Keep local assets inside `assets/`; do not hotlink project images.
-- Optimize large images before committing when practical, while preserving enough
-  detail for desktop displays.
-- Do not add API keys, access tokens, `.env` files, private URLs, personal data, or
-  other secrets. This is a public repository.
-- Do not modify the source repositories for the projects shown on this page as part
-  of a homepage-only change.
-- Preserve unrelated working-tree changes and avoid destructive Git operations.
+## 修改规则
 
-## Content and accessibility
+- 除非确有必要，否则保持网站无构建依赖、无前端框架。
+- 保持当前视觉方向：深色霓虹研究舱区域与暖色米白档案区域相结合。
+- 优先使用清晰的像素边框、高精度像素画，以及青色、粉色、荧光绿等强调色。
+- 不要添加普通企业官网风格的通用卡片，也不要使用与整体风格不一致的写实素材或图库照片。
+- 网站内容必须基于真实、公开的项目信息和有效链接。
+- 不得虚构项目数据、研究成果、所属机构、项目进度或其他个人经历。
+- 所有网站图片应保存在 `assets/` 目录中，不要直接引用其他项目仓库中的图片地址。
+- 提交大型图片前，应在不明显损失桌面端细节的前提下进行适当压缩。
+- 不得提交 API Key、访问令牌、`.env` 文件、私人链接、个人隐私或其他敏感信息。
+- 这是一个公开仓库，任何新增内容都应按“所有人都能看到”来处理。
+- 修改个人主页时，不要顺带修改页面中所展示项目的源代码仓库。
+- 保留用户现有的无关修改，不使用破坏性的 Git 操作。
 
-- Simplified Chinese is the primary language; concise English labels may be used as
-  part of the visual identity.
-- Every meaningful image must have useful alternative text.
-- Interactive controls must remain keyboard accessible and show a clear focus state.
-- External links opened in a new tab must include `rel="noreferrer"`.
-- Respect `prefers-reduced-motion` and do not hide essential content behind animation.
-- Keep the footer attribution: `Made by Golden Philosophy`.
+## 内容与无障碍要求
 
-## Responsive requirements
+- 网站主要使用简体中文；英文可以作为像素风视觉标签或技术名称的补充。
+- 所有具有实际含义的图片都必须提供准确的替代文本 `alt`。
+- 按钮、导航和筛选控件必须支持键盘操作，并显示清晰的焦点状态。
+- 使用 `target="_blank"` 打开的外部链接必须同时包含 `rel="noreferrer"`。
+- 网站应尊重系统的 `prefers-reduced-motion` 设置。
+- 重要内容不能依赖动画结束后才显示，关闭动画时也必须正常阅读。
+- 页脚必须保留 `Made by Golden Philosophy` 署名。
 
-- Treat desktop and a `390 × 844` mobile viewport as required validation targets.
-- The page must not introduce horizontal scrolling at either target.
-- Check image cropping, large Chinese headings, project filters, mobile navigation,
-  and footer readability after visual changes.
+## 响应式要求
 
-## Verification
+- 桌面端和 `390 × 844` 手机端是每次视觉修改后的必测尺寸。
+- 两种尺寸下都不能出现横向滚动条。
+- 修改页面后，应重点检查以下内容：
 
-Before committing a change, run:
+  - 项目图片的裁切和清晰度
+  - 中文大标题是否重叠或被截断
+  - 项目筛选按钮是否正常
+  - 手机端导航菜单是否正常
+  - 页脚内容是否清晰可读
+
+## 修改后的检查
+
+提交代码前，至少运行：
 
 ```powershell
 npm test
 git diff --check
 ```
 
-For rendered UI changes, also preview the page in a browser and verify:
+如果修改了页面样式、图片、布局或交互，还必须在浏览器中进行实际预览，并确认：
 
-1. The page title and main content load correctly.
-2. Local images load with non-zero natural dimensions.
-3. Browser console contains no relevant errors or warnings.
-4. At least one affected interaction works, such as project filtering or mobile navigation.
-5. Desktop and `390 × 844` mobile layouts have no overflow, clipping, or broken assets.
+1. 页面标题和主要内容正常加载。
+2. 本地图片成功加载，图片的实际宽度和高度不为零。
+3. 浏览器控制台没有与网站有关的错误或警告。
+4. 至少实际操作一次本次修改影响到的交互，例如项目筛选或手机导航。
+5. 桌面端和 `390 × 844` 手机端没有溢出、遮挡、错误裁切或资源丢失。
 
-## Publishing
+## 发布规则
 
-- The production branch is `main`.
-- GitHub Pages publishes from the repository root.
-- Do not force-push.
-- After pushing, confirm both the `Site checks` and `pages build and deployment`
-  workflows succeed.
-- Verify the live page with a cache-busting query parameter before claiming the
-  deployment is complete.
-- Confirm local `HEAD`, `origin/main`, and the live site all correspond to the new change.
+- 生产分支为 `main`。
+- GitHub Pages 从仓库根目录发布。
+- 禁止强制推送。
+- 推送后必须确认以下两个 GitHub Actions 工作流成功完成：
+
+  - `Site checks`
+  - `pages build and deployment`
+
+- 在宣布发布完成前，必须使用带随机查询参数的线上链接绕过缓存并检查最新页面。
+- 必须确认本地 `HEAD`、远程 `origin/main` 和线上页面都已经对应本次修改。
 
