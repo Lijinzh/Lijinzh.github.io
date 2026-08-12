@@ -34,7 +34,11 @@
 
     <header class="site-header" data-header>
       <a class="brand" href="#top" aria-label="返回首页">
-        <span class="brand__mark" aria-hidden="true"><i></i><b>GP</b></span>
+        <span class="brand__mark brand-robot" aria-hidden="true">
+          <i class="brand-robot__antenna"></i>
+          <i class="brand-robot__head"><b></b><b></b></i>
+          <i class="brand-robot__core"></i>
+        </span>
         <span class="brand__copy">
           <strong>JINZHE LI</strong>
           <small>GOLDEN PHILOSOPHY</small>
@@ -50,14 +54,26 @@
         <a href="#projects">开源项目</a>
         <a href="#research">研究方向</a>
         <a href="#now">正在研究</a>
+        <button class="theme-toggle" type="button" aria-expanded="false" aria-controls="theme-panel" data-theme-toggle>
+          场景 <span aria-hidden="true">◈</span>
+        </button>
         <a class="nav-github" href="https://github.com/Lijinzh" target="_blank" rel="noreferrer">
           GITHUB ↗
         </a>
       </nav>
+      <div class="theme-panel" id="theme-panel" data-theme-panel hidden>
+        <p>SELECT ATMOSPHERE</p>
+        <button type="button" data-theme="archive" aria-pressed="true"><i></i><span><b>静默档案</b><small>冷绿 · 心理惊悚</small></span></button>
+        <button type="button" data-theme="cathedral" aria-pressed="false"><i></i><span><b>暗金圣堂</b><small>雨夜 · 神秘黑色幻想</small></span></button>
+        <button type="button" data-theme="cosmos" aria-pressed="false"><i></i><span><b>深空观测</b><small>星海 · 科研探索</small></span></button>
+      </div>
     </header>
 
     <main id="main">
       <section class="hero" id="top">
+        <div class="hero__scene hero__scene--archive" aria-hidden="true"></div>
+        <div class="hero__scene hero__scene--cathedral" aria-hidden="true"></div>
+        <div class="hero__scene hero__scene--cosmos" aria-hidden="true"></div>
         <div class="hero__noise" aria-hidden="true"></div>
         <div class="hero__grid page-shell">
           <div class="hero__copy" data-reveal>
@@ -84,15 +100,46 @@
           <div class="hero__visual" data-reveal>
             <div class="console-frame">
               <div class="console-frame__top">
-                <span>LAB_VIEW_01</span>
-                <span class="console-lights"><i></i><i></i><i></i></span>
+                <span>RESEARCH_COCKPIT / GP-01</span>
+                <span class="console-status"><i></i> LOCAL NODE ACTIVE</span>
+                <span class="console-lights" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
               </div>
-              <img
-                src="assets/pixel-research-lab.png"
-                width="840"
-                height="620"
-                alt="像素风研究舱：包含机器人手臂、网球轨迹、AI 编程手柄和终端屏幕"
-              />
+              <div class="cockpit-shell">
+                <aside class="cockpit-rail cockpit-rail--left" aria-hidden="true">
+                  <p>SENSORS</p>
+                  <span>VISION <i></i></span>
+                  <span>AUDIO <i></i></span>
+                  <span>POSE <i></i></span>
+                  <span>TACTILE <i></i></span>
+                  <b>INPUT<br />STACK</b>
+                </aside>
+                <div class="cockpit-stage">
+                  <div
+                    class="cockpit-art cockpit-art--archive"
+                    role="img"
+                    aria-label="像素风静默档案研究场景"
+                    data-theme-scene
+                  ></div>
+                  <div class="cockpit-art cockpit-art--cathedral" aria-hidden="true"></div>
+                  <div class="cockpit-art cockpit-art--cosmos" aria-hidden="true"></div>
+                  <div class="cockpit-reticle" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+                  <div class="cockpit-scan" aria-hidden="true"></div>
+                  <div class="cockpit-ticks" aria-hidden="true"><span>10</span><span>25</span><span>50</span><span>75</span><span>90</span></div>
+                </div>
+                <aside class="cockpit-rail cockpit-rail--right" aria-hidden="true">
+                  <p>WORKFLOW</p>
+                  <span>BUILD <i></i></span>
+                  <span>TEST <i></i></span>
+                  <span>VERIFY <i></i></span>
+                  <span>SHARE <i></i></span>
+                  <b>OPEN<br />OUTPUT</b>
+                </aside>
+              </div>
+              <div class="cockpit-deck" aria-hidden="true">
+                <div><small>SIGNAL INPUT</small><b class="signal-bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></b></div>
+                <div><small>VALIDATION LOOP</small><b class="validation-mark">⌖</b></div>
+                <div><small>PUBLIC OUTPUT</small><b class="output-meter"><i></i><i></i><i></i><i></i><i></i></b></div>
+              </div>
               <div class="console-frame__readout">
                 <span>NOW SCANNING</span>
                 <strong data-signal>AUDIO + POSE + RACKET</strong>
@@ -300,7 +347,12 @@
       </section>
 
       <section class="contact">
-        <div class="contact__pixel-sun" aria-hidden="true"></div>
+        <div class="contact__horizon" aria-hidden="true">
+          <div class="contact__sun"><i></i></div>
+          <div class="contact__skyline contact__skyline--far"></div>
+          <div class="contact__skyline contact__skyline--near"></div>
+          <div class="contact__road"></div>
+        </div>
         <div class="page-shell contact__inner" data-reveal>
           <p class="section-index">04 / TRANSMIT</p>
           <h2>有意思的问题，<br /><span>一起把它做出来。</span></h2>

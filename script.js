@@ -3,6 +3,10 @@ const navToggle = document.querySelector('.nav-toggle');
 const navLinks = [...document.querySelectorAll('.site-nav a[href^="#"]')];
 const filters = [...document.querySelectorAll('[data-filter]')];
 const projectCards = [...document.querySelectorAll('[data-category]')];
+const themeToggle = document.querySelector('[data-theme-toggle]');
+const themePanel = document.querySelector('[data-theme-panel]');
+const themeButtons = [...document.querySelectorAll('[data-theme]')];
+const themeScene = document.querySelector('[data-theme-scene]');
 const signals = [
   'AUDIO + POSE + RACKET',
   'HARDWARE + AGENT FEEDBACK',
@@ -11,6 +15,46 @@ const signals = [
 ];
 
 document.querySelector('[data-year]').textContent = new Date().getFullYear();
+
+const allowedThemes = new Set(['archive', 'cathedral', 'cosmos']);
+const themeLabels = {
+  archive: '像素风静默档案研究场景',
+  cathedral: '像素风暗金神秘圣堂研究场景',
+  cosmos: '像素风深空观测站研究场景',
+};
+const storedTheme = window.localStorage.getItem('gp-theme');
+const initialTheme = allowedThemes.has(storedTheme) ? storedTheme : 'archive';
+
+const applyTheme = (theme) => {
+  document.documentElement.dataset.theme = theme;
+  themeButtons.forEach((button) => {
+    button.setAttribute('aria-pressed', String(button.dataset.theme === theme));
+  });
+  themeScene?.setAttribute('aria-label', themeLabels[theme]);
+  window.localStorage.setItem('gp-theme', theme);
+};
+
+applyTheme(initialTheme);
+
+themeToggle?.addEventListener('click', () => {
+  const open = themeToggle.getAttribute('aria-expanded') === 'true';
+  themeToggle.setAttribute('aria-expanded', String(!open));
+  themePanel.hidden = open;
+});
+
+themeButtons.forEach((button) => {
+  button.addEventListener('click', () => {
+    applyTheme(button.dataset.theme);
+    themeToggle?.setAttribute('aria-expanded', 'false');
+    themePanel.hidden = true;
+  });
+});
+
+document.addEventListener('click', (event) => {
+  if (!themePanel || themePanel.hidden || themePanel.contains(event.target) || themeToggle?.contains(event.target)) return;
+  themeToggle?.setAttribute('aria-expanded', 'false');
+  themePanel.hidden = true;
+});
 
 navToggle?.addEventListener('click', () => {
   const open = navToggle.getAttribute('aria-expanded') === 'true';

@@ -12,6 +12,10 @@ test('homepage contains the requested personal sections', () => {
     assert.match(html, new RegExp(`id=["']${id}["']`));
   }
   assert.match(html, /Made by <strong>Golden Philosophy<\/strong>/);
+  assert.match(html, /data-theme-toggle/);
+  assert.match(html, /data-theme="archive"/);
+  assert.match(html, /data-theme="cathedral"/);
+  assert.match(html, /data-theme="cosmos"/);
 });
 
 test('every public repository is represented', () => {
