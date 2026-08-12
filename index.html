@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#070817" />
+    <meta
+      name="description"
+      content="JinZhe Li（Golden Philosophy）的个人主页：开源项目、机器人与多模态感知研究，以及正在进行的实验。"
+    />
+    <meta property="og:title" content="JinZhe Li · Golden Philosophy" />
+    <meta
+      property="og:description"
+      content="把好奇心做成能运行、能验证、能分享的东西。"
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://lijinzh.github.io/" />
+    <meta property="og:image" content="https://lijinzh.github.io/assets/projects/gpt-image-pixel.png" />
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="script.js" defer></script>
+    <title>JinZhe Li · Golden Philosophy</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">跳到主要内容</a>
+
+    <div class="signal-bar" aria-hidden="true">
+      <div class="signal-bar__track">
+        <span>GOLDEN PHILOSOPHY // ROBOTICS × HUMAN INPUT × RELIABLE AI //</span>
+        <span>OPEN SOURCE // BUILD · TEST · SHARE //</span>
+        <span>GOLDEN PHILOSOPHY // ROBOTICS × HUMAN INPUT × RELIABLE AI //</span>
+      </div>
+    </div>
+
+    <header class="site-header" data-header>
+      <a class="brand" href="#top" aria-label="返回首页">
+        <span class="brand__mark" aria-hidden="true"><i></i><b>GP</b></span>
+        <span class="brand__copy">
+          <strong>JINZHE LI</strong>
+          <small>GOLDEN PHILOSOPHY</small>
+        </span>
+      </a>
+
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
+        <span></span><span></span><span></span>
+        <span class="sr-only">打开导航</span>
+      </button>
+
+      <nav class="site-nav" id="site-nav" aria-label="主导航">
+        <a href="#projects">开源项目</a>
+        <a href="#research">研究方向</a>
+        <a href="#now">正在研究</a>
+        <a class="nav-github" href="https://github.com/Lijinzh" target="_blank" rel="noreferrer">
+          GITHUB ↗
+        </a>
+      </nav>
+    </header>
+
+    <main id="main">
+      <section class="hero" id="top">
+        <div class="hero__noise" aria-hidden="true"></div>
+        <div class="hero__grid page-shell">
+          <div class="hero__copy" data-reveal>
+            <p class="eyebrow"><span class="status-dot"></span> OPEN LAB / CHANGSHA, CN</p>
+            <h1>
+              把好奇心<br />
+              <span>做成能工作的东西。</span>
+            </h1>
+            <p class="hero__lead">
+              我关注机器人、多模态感知、人机交互与可靠 AI 工具，
+              也把研究问题做成能运行、能验证、能分享的开源项目。
+            </p>
+            <div class="hero__actions">
+              <a class="pixel-button pixel-button--lime" href="#projects">查看开源项目 <b>↓</b></a>
+              <a class="pixel-button pixel-button--ghost" href="#now">进入研究日志 <b>→</b></a>
+            </div>
+            <dl class="hero__stats" aria-label="公开资料概览">
+              <div><dt>05</dt><dd>PUBLIC REPOS</dd></div>
+              <div><dt>04</dt><dd>RESEARCH SIGNALS</dd></div>
+              <div><dt>∞</dt><dd>THINGS TO LEARN</dd></div>
+            </dl>
+          </div>
+
+          <div class="hero__visual" data-reveal>
+            <div class="console-frame">
+              <div class="console-frame__top">
+                <span>LAB_VIEW_01</span>
+                <span class="console-lights"><i></i><i></i><i></i></span>
+              </div>
+              <img
+                src="assets/pixel-research-lab.png"
+                width="840"
+                height="620"
+                alt="像素风研究舱：包含机器人手臂、网球轨迹、AI 编程手柄和终端屏幕"
+              />
+              <div class="console-frame__readout">
+                <span>NOW SCANNING</span>
+                <strong data-signal>AUDIO + POSE + RACKET</strong>
+              </div>
+              <div class="console-frame__corner" aria-hidden="true">+</div>
+            </div>
+          </div>
+        </div>
+        <div class="hero__marquee" aria-hidden="true">
+          <span>MAKE IT REAL</span><i>✦</i><span>MAKE IT TESTABLE</span><i>✦</i><span>MAKE IT OPEN</span>
+        </div>
+      </section>
+
+      <section class="projects paper-section" id="projects">
+        <div class="page-shell">
+          <div class="section-heading" data-reveal>
+            <div>
+              <p class="section-index">01 / OPEN SOURCE</p>
+              <h2>从真实问题出发的<br /><span>开源项目。</span></h2>
+            </div>
+            <p>
+              这里不是陈列柜，而是一组持续生长的实验：从视频理解、AI 图像工具到实体交互设备，
+              每个项目都尽量留下代码、文档和可复现的使用路径。
+            </p>
+          </div>
+
+          <div class="project-filters" role="group" aria-label="筛选项目" data-reveal>
+            <button class="is-active" type="button" data-filter="all">全部项目</button>
+            <button type="button" data-filter="perception">感知与机器人</button>
+            <button type="button" data-filter="tool">AI 工具</button>
+            <button type="button" data-filter="experience">数字体验</button>
+          </div>
+
+          <div class="project-grid">
+            <article class="project-card project-card--feature" data-category="perception" data-reveal>
+              <a class="project-card__image" href="https://lijinzh.github.io/TennisVideoHelper/" target="_blank" rel="noreferrer">
+                <img src="assets/projects/tennis-review.webp" alt="Tennis Video Helper 桌面端界面" loading="lazy" />
+                <span class="image-badge">FEATURED / 01</span>
+              </a>
+              <div class="project-card__body">
+                <div class="project-card__meta"><span>PYTHON · COMPUTER VISION</span><b>ACTIVE</b></div>
+                <h3>Tennis Video Helper</h3>
+                <p>融合音频瞬态、人体姿态与球拍检测，自动理解网球视频中的击球与回合，并使用 GPU 加速导出。</p>
+                <div class="project-card__links">
+                  <a href="https://lijinzh.github.io/TennisVideoHelper/" target="_blank" rel="noreferrer">项目主页 ↗</a>
+                  <a href="https://github.com/Lijinzh/TennisVideoHelper" target="_blank" rel="noreferrer">源代码 ↗</a>
+                </div>
+              </div>
+            </article>
+
+            <article class="project-card" data-category="tool" data-reveal>
+              <a class="project-card__image project-card__image--pixel" href="https://lijinzh.github.io/gpt-image-2-cli/" target="_blank" rel="noreferrer">
+                <img src="assets/projects/gpt-image-pixel.png" alt="GPT Image 2 CLI 生成的像素雪山观测站" loading="lazy" />
+                <span class="image-badge">OPEN CLI / 02</span>
+              </a>
+              <div class="project-card__body">
+                <div class="project-card__meta"><span>PYTHON · GENERATIVE AI</span><b>PUBLIC</b></div>
+                <h3>GPT Image 2 CLI</h3>
+                <p>通过 OpenAI 兼容中转接口与 CC-Switch 使用 GPT-Image 模型，注重可靠调用与 API Key 安全。</p>
+                <div class="project-card__links">
+                  <a href="https://lijinzh.github.io/gpt-image-2-cli/" target="_blank" rel="noreferrer">使用指南 ↗</a>
+                  <a href="https://github.com/Lijinzh/gpt-image-2-cli" target="_blank" rel="noreferrer">源代码 ↗</a>
+                </div>
+              </div>
+            </article>
+
+            <article class="project-card" data-category="tool" data-reveal>
+              <a class="project-card__image project-card__image--device" href="https://zkolab.com/" target="_blank" rel="noreferrer">
+                <img src="assets/projects/ai-coding-handle.webp" alt="ZKO AI 编程手柄产品图" loading="lazy" />
+                <span class="image-badge">HARDWARE / 03</span>
+              </a>
+              <div class="project-card__body">
+                <div class="project-card__meta"><span>HARDWARE · AGENT INPUT</span><b>BUILDING</b></div>
+                <h3>AI Coding Handle</h3>
+                <p>把快捷输入、语音、状态反馈与 Agent 工作流装进实体手柄；AutoClipboard 与固件通过公开仓库交付。</p>
+                <div class="project-card__links">
+                  <a href="https://zkolab.com/" target="_blank" rel="noreferrer">了解项目 ↗</a>
+                  <a href="https://github.com/Lijinzh/Communist-Manifesto-Releases" target="_blank" rel="noreferrer">公开发布 ↗</a>
+                </div>
+              </div>
+            </article>
+
+            <article class="project-card project-card--wide" data-category="perception" data-reveal>
+              <a class="project-card__image project-card__image--chart" href="https://github.com/Lijinzh/RobotARMNN" target="_blank" rel="noreferrer">
+                <img src="assets/projects/robot-arm-idyn.png" alt="RobotARMNN 逆动力学模型对比图" loading="lazy" />
+                <span class="image-badge">RESEARCH / 04</span>
+              </a>
+              <div class="project-card__body">
+                <div class="project-card__meta"><span>MUJOCO · NEURAL NETWORKS</span><b>EXPERIMENT</b></div>
+                <h3>RobotARMNN</h3>
+                <p>在 MuJoCo 中研究机械臂逆运动学与逆动力学，对比 MLP、ESN、LSTM、GRU 等模型的表现。</p>
+                <div class="project-card__links">
+                  <a href="https://github.com/Lijinzh/RobotARMNN" target="_blank" rel="noreferrer">查看实验 ↗</a>
+                </div>
+              </div>
+            </article>
+
+            <article class="project-card" data-category="experience" data-reveal>
+              <a class="project-card__image project-card__image--travel" href="https://lijinzh.github.io/hainan-travel-plan/" target="_blank" rel="noreferrer">
+                <img src="assets/projects/hainan.jpg" alt="海南海岸与椰林" loading="lazy" />
+                <span class="image-badge">WEB / 05</span>
+              </a>
+              <div class="project-card__body">
+                <div class="project-card__meta"><span>TRAVEL · WEB EXPERIENCE</span><b>ONLINE</b></div>
+                <h3>Hainan Travel Plan</h3>
+                <p>从长沙出发的海南旅行规划页面，把路线、预算、体验项目与移动端阅读体验组织在一起。</p>
+                <div class="project-card__links">
+                  <a href="https://lijinzh.github.io/hainan-travel-plan/" target="_blank" rel="noreferrer">打开页面 ↗</a>
+                  <a href="https://github.com/Lijinzh/hainan-travel-plan" target="_blank" rel="noreferrer">源代码 ↗</a>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="research" id="research">
+        <div class="page-shell">
+          <div class="section-heading section-heading--dark" data-reveal>
+            <div>
+              <p class="section-index">02 / RESEARCH SIGNALS</p>
+              <h2>我感兴趣的<br /><span>研究方向。</span></h2>
+            </div>
+            <p>我更关心不同技术在真实系统里相遇的地方：感知如何变得可信，模型如何进入设备，人又如何自然地与智能系统协作。</p>
+          </div>
+
+          <div class="signal-map" data-reveal>
+            <div class="signal-map__core">
+              <span>GP</span>
+              <small>OPEN LAB</small>
+            </div>
+            <article class="research-node research-node--a">
+              <span class="research-node__icon" aria-hidden="true">◉</span>
+              <p>01</p><h3>多模态感知</h3>
+              <small>把声音、视觉、姿态与时序信息组合起来，让机器看懂动态场景。</small>
+            </article>
+            <article class="research-node research-node--b">
+              <span class="research-node__icon" aria-hidden="true">⌁</span>
+              <p>02</p><h3>具身智能与机器人控制</h3>
+              <small>从运动学、动力学到真实硬件，研究模型如何产生可执行的动作。</small>
+            </article>
+            <article class="research-node research-node--c">
+              <span class="research-node__icon" aria-hidden="true">⌘</span>
+              <p>03</p><h3>人机 / Agent 交互</h3>
+              <small>探索按键、语音、状态反馈与自动化之间更直接、更自然的协作方式。</small>
+            </article>
+            <article class="research-node research-node--d">
+              <span class="research-node__icon" aria-hidden="true">✓</span>
+              <p>04</p><h3>可靠 AI 工具</h3>
+              <small>关注安全配置、可复现流程、失败边界与真实环境中的交付质量。</small>
+            </article>
+            <svg class="signal-map__lines" viewBox="0 0 1000 600" aria-hidden="true">
+              <path d="M500 300 L210 140 M500 300 L790 140 M500 300 L210 470 M500 300 L790 470" />
+              <circle cx="500" cy="300" r="180" />
+            </svg>
+          </div>
+        </div>
+      </section>
+
+      <section class="now paper-section" id="now">
+        <div class="page-shell">
+          <div class="section-heading" data-reveal>
+            <div>
+              <p class="section-index">03 / FIELD NOTES</p>
+              <h2>目前正在<br /><span>研究的内容。</span></h2>
+            </div>
+            <p>这些不是已经盖章的答案，而是正在被实现、测试与修正的问题。仓库是研究记录的一部分。</p>
+          </div>
+
+          <div class="research-log">
+            <article class="log-entry" data-reveal>
+              <div class="log-entry__number">LOG<br /><b>001</b></div>
+              <div class="log-entry__main">
+                <div class="log-entry__status"><span></span> ACTIVE / 持续验证</div>
+                <h3>网球音画融合回合识别</h3>
+                <p>围绕音频峰值、人体姿态、球拍证据与跨批次时序关系，减少误判，同时保留真实击球的识别能力。</p>
+                <div class="log-entry__tags"><span>AUDIO</span><span>POSE</span><span>RACKET</span><span>NVENC</span></div>
+              </div>
+              <a href="https://github.com/Lijinzh/TennisVideoHelper" target="_blank" rel="noreferrer" aria-label="打开 Tennis Video Helper 仓库">↗</a>
+            </article>
+
+            <article class="log-entry" data-reveal>
+              <div class="log-entry__number">LOG<br /><b>002</b></div>
+              <div class="log-entry__main">
+                <div class="log-entry__status log-entry__status--orange"><span></span> BUILDING / 系统联调</div>
+                <h3>AI 编程手柄与 AutoClipboard</h3>
+                <p>继续打磨实体输入设备、桌面软件、固件与 Agent 工作流之间的连接，让频繁操作变成更自然的肌肉记忆。</p>
+                <div class="log-entry__tags"><span>HARDWARE</span><span>FIRMWARE</span><span>VOICE</span><span>AGENTS</span></div>
+              </div>
+              <a href="https://github.com/Lijinzh/Communist-Manifesto-Releases" target="_blank" rel="noreferrer" aria-label="打开公开发布仓库">↗</a>
+            </article>
+
+            <article class="log-entry" data-reveal>
+              <div class="log-entry__number">LOG<br /><b>003</b></div>
+              <div class="log-entry__main">
+                <div class="log-entry__status log-entry__status--violet"><span></span> EXPERIMENT / 模型对比</div>
+                <h3>机械臂神经网络运动学与动力学</h3>
+                <p>在仿真环境中比较不同神经网络对逆运动学、逆动力学问题的拟合方式与误差表现。</p>
+                <div class="log-entry__tags"><span>MUJOCO</span><span>IK</span><span>IDYN</span><span>LSTM / GRU</span></div>
+              </div>
+              <a href="https://github.com/Lijinzh/RobotARMNN" target="_blank" rel="noreferrer" aria-label="打开 RobotARMNN 仓库">↗</a>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="contact">
+        <div class="contact__pixel-sun" aria-hidden="true"></div>
+        <div class="page-shell contact__inner" data-reveal>
+          <p class="section-index">04 / TRANSMIT</p>
+          <h2>有意思的问题，<br /><span>一起把它做出来。</span></h2>
+          <p>如果你也在研究机器人、计算机视觉、AI 工具，或者只是对某个开源项目有想法，欢迎通过 GitHub 联系我。</p>
+          <a class="pixel-button pixel-button--pink" href="https://github.com/Lijinzh" target="_blank" rel="noreferrer">VISIT @LIJINZH <b>↗</b></a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="page-shell">
+        <p>Made by <strong>Golden Philosophy</strong> · © <span data-year>2026</span> JinZhe Li</p>
+        <p>BUILT IN PUBLIC / CHANGSHA → WORLD</p>
+      </div>
+    </footer>
+  </body>
+</html>

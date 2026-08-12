@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 620" shape-rendering="crispEdges" role="img" aria-labelledby="title desc">
+  <title id="title">Golden Philosophy 像素研究舱</title>
+  <desc id="desc">研究者坐在霓虹实验室中，旁边有机械臂、网球轨迹、编程手柄和数据终端。</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#08091d"/><stop offset="1" stop-color="#251554"/>
+    </linearGradient>
+    <pattern id="floor" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M48 0H0V48" fill="none" stroke="#373068" stroke-width="2"/>
+      <path d="M0 48L48 0" stroke="#211b4c" stroke-width="2"/>
+    </pattern>
+  </defs>
+  <rect width="840" height="620" fill="url(#sky)"/>
+  <path fill="#11122c" d="M0 0h840v40H0zM0 40h24v580H0zM816 40h24v580h-24z"/>
+  <path fill="#18d7d0" d="M24 40h792v8H24zM24 48h8v316h-8zM808 48h8v316h-8z"/>
+  <path fill="#ff4f9a" d="M40 56h8v8h-8zM792 56h8v8h-8zM744 64h24v8h-24zM64 72h16v8H64z"/>
+
+  <!-- star window -->
+  <rect x="52" y="68" width="736" height="260" fill="#070817"/>
+  <path fill="#fff5b8" d="M112 96h6v6h-6zM178 142h8v8h-8zM254 88h4v4h-4zM324 130h6v6h-6zM416 82h8v8h-8zM520 118h5v5h-5zM610 82h6v6h-6zM720 144h8v8h-8zM678 106h4v4h-4zM570 174h4v4h-4zM148 200h4v4h-4z"/>
+  <path fill="#18d7d0" d="M660 180h8v8h-8v-8zm-8 8h8v8h-8v-8zm16 0h8v8h-8v-8zm-8 8h8v8h-8v-8z"/>
+  <path fill="#ff4f9a" d="M228 176h8v8h-8v-8zm-8 8h8v8h-8v-8zm16 0h8v8h-8v-8zm-8 8h8v8h-8v-8z"/>
+  <path fill="#ffcc66" d="M366 98h8v8h-8v-8zm-8 8h8v8h-8v-8zm16 0h8v8h-8v-8zm-8 8h8v8h-8v-8z"/>
+  <!-- distant pixel city -->
+  <path fill="#17183b" d="M52 264h56v-44h48v28h60v-72h44v52h48v-36h36v72h48v-92h44v68h52v-36h52v60h44v-76h52v52h56v-32h44v76h60v64H52z"/>
+  <path fill="#31245e" d="M64 276h72v-28h52v44h72v-76h48v56h64v-40h56v60h60v-76h40v48h72v-32h52v60h84v36H64z"/>
+  <path fill="#18d7d0" d="M120 236h8v8h-8zM144 236h8v8h-8zM276 232h8v8h-8zM276 252h8v8h-8zM460 236h8v8h-8zM580 248h8v8h-8zM676 260h8v8h-8z"/>
+  <path fill="#ff4f9a" d="M84 284h8v8h-8zM212 272h8v8h-8zM340 248h8v8h-8zM524 276h8v8h-8zM628 248h8v8h-8zM748 284h8v8h-8z"/>
+
+  <!-- lab floor -->
+  <rect y="328" width="840" height="292" fill="#10112c"/>
+  <rect y="360" width="840" height="260" fill="url(#floor)"/>
+  <path fill="#18d7d0" opacity=".35" d="M0 360h840v4H0zM160 360h4v260h-4zM676 360h4v260h-4z"/>
+
+  <!-- left vision terminal -->
+  <rect x="48" y="342" width="212" height="148" fill="#08091b"/>
+  <path fill="#4e4388" d="M48 342h212v8H48zM48 482h212v8H48zM48 350h8v132h-8zM252 350h8v132h-8z"/>
+  <rect x="68" y="362" width="172" height="88" fill="#11153a"/>
+  <path fill="#18d7d0" d="M76 430l22-18 18 8 24-32 26 18 18-10 26 20 22-38v8l-20 46-28-24-20 12-22-14-22 32-22-12-22 16z"/>
+  <path fill="#ff4f9a" d="M76 374h48v6H76zM76 386h28v6H76zM188 370h42v6h-42z"/>
+  <path fill="#b7ff43" d="M72 462h52v8H72z"/>
+  <path fill="#ffcc66" d="M134 462h24v8h-24z"/>
+  <path fill="#6d5ca6" d="M168 462h64v8h-64z"/>
+
+  <!-- robot arm -->
+  <rect x="84" y="508" width="156" height="24" fill="#292650"/>
+  <path fill="#6d5ca6" d="M104 484h48v24h-48zM112 456h32v28h-32z"/>
+  <path fill="#ff884f" d="M118 460h20v16h-20zM136 438h16v24h-16zM148 424h56v16h-56zM196 392h20v40h-20zM208 376h64v20h-64z"/>
+  <path fill="#ffcc66" d="M128 430h20v28h-20zM144 420h16v20h-16zM192 400h20v24h-20zM260 368h20v36h-20z"/>
+  <path fill="#18d7d0" d="M272 376h24v8h-24zM288 368h8v24h-8z"/>
+
+  <!-- desk -->
+  <path fill="#25234c" d="M282 460h300v28H282zM306 488h24v104h-24zM534 488h24v104h-24z"/>
+  <path fill="#ff4f9a" d="M282 460h300v8H282z"/>
+  <path fill="#151633" d="M338 356h196v108H338z"/>
+  <path fill="#6d5ca6" d="M330 348h212v12H330zM330 456h212v8H330zM330 360h8v96h-8zM534 360h8v96h-8z"/>
+  <rect x="350" y="370" width="172" height="72" fill="#08111f"/>
+  <path fill="#18d7d0" d="M362 384h62v6h-62zM362 398h98v6h-98zM362 412h42v6h-42z"/>
+  <path fill="#b7ff43" d="M414 412h36v6h-36z"/>
+  <path fill="#ff4f9a" d="M470 384h40v6h-40zM462 426h48v6h-48z"/>
+  <path fill="#4b427b" d="M414 464h44v12h-44z"/>
+
+  <!-- researcher -->
+  <path fill="#222348" d="M384 530h120v62H384z"/>
+  <path fill="#6d5ca6" d="M374 538h16v54h-16zM498 538h16v54h-16z"/>
+  <path fill="#ffcc8a" d="M404 460h72v64h-72z"/>
+  <path fill="#202244" d="M396 452h88v32h-88zM404 440h72v20h-72zM396 460h16v56h-16z"/>
+  <path fill="#ff4f9a" d="M408 448h64v8h-64z"/>
+  <path fill="#191a38" d="M416 480h12v12h-12zM452 480h12v12h-12z"/>
+  <path fill="#18d7d0" d="M414 478h16v6h-16zM450 478h16v6h-16zM430 480h20v4h-20z"/>
+  <path fill="#a15b58" d="M432 506h24v6h-24z"/>
+  <path fill="#2d2e5e" d="M396 516h88v76h-88z"/>
+  <path fill="#b7ff43" d="M426 532h28v28h-28z"/>
+  <path fill="#0f1028" d="M434 540h12v12h-12z"/>
+  <path fill="#ffcc8a" d="M368 538h28v16h-28zM484 538h28v16h-28z"/>
+
+  <!-- right tennis / controller screen -->
+  <rect x="606" y="344" width="186" height="146" fill="#08091b"/>
+  <path fill="#4e4388" d="M606 344h186v8H606zM606 482h186v8H606zM606 352h8v130h-8zM784 352h8v130h-8z"/>
+  <path fill="#173b52" d="M622 364h154v84H622z"/>
+  <path fill="#18d7d0" d="M626 430h146v6H626z"/>
+  <path fill="#b7ff43" d="M674 374h14v14h-14zM666 388h30v8h-30zM658 396h14v26h-14zM690 396h14v26h-14z"/>
+  <path fill="#ff884f" d="M716 386h12v12h-12zM730 374h12v12h-12zM744 366h12v12h-12z"/>
+  <path fill="none" stroke="#ff4f9a" stroke-width="6" d="M720 418q28-54 50-24"/>
+  <circle cx="764" cy="392" r="8" fill="#ffcc66"/>
+  <path fill="#6d5ca6" d="M626 460h40v8h-40zM678 460h92v8h-92z"/>
+
+  <!-- handheld device -->
+  <path fill="#191a38" d="M624 514h144v66H624z"/>
+  <path fill="#ff884f" d="M632 506h128v8H632zM616 522h16v42h-16zM760 522h16v42h-16z"/>
+  <rect x="670" y="526" width="52" height="30" fill="#0b2c37"/>
+  <path fill="#18d7d0" d="M678 534h36v6h-36zM678 546h20v4h-20z"/>
+  <path fill="#b7ff43" d="M642 530h10v30h-10zM632 540h30v10h-30z"/>
+  <path fill="#ff4f9a" d="M738 532h12v12h-12z"/>
+  <path fill="#ffcc66" d="M724 548h12v12h-12z"/>
+
+  <!-- foreground lights -->
+  <path fill="#18d7d0" d="M40 600h184v8H40zM616 600h184v8H616z"/>
+  <path fill="#ff4f9a" d="M240 600h88v8h-88zM512 600h88v8h-88z"/>
+  <path fill="#ffcc66" d="M344 600h152v8H344z"/>
+</svg>

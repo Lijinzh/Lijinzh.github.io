@@ -1,0 +1,12 @@
+{
+  "name": "lijinzh-github-io",
+  "version": "1.0.0",
+  "private": true,
+  "description": "JinZhe Li / Golden Philosophy personal GitHub Pages site",
+  "scripts": {
+    "test": "node --test tests/site.test.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
