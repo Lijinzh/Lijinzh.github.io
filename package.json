@@ -4,7 +4,12 @@
   "private": true,
   "description": "JinZhe Li / Golden Philosophy personal GitHub Pages site",
   "scripts": {
-    "test": "node --test tests/site.test.mjs"
+    "test": "node --test tests/site.test.mjs",
+    "previews:update": "node tools/update-project-previews.mjs"
+  },
+  "devDependencies": {
+    "playwright": "1.62.0",
+    "sharp": "0.35.3"
   },
   "engines": {
     "node": ">=20"

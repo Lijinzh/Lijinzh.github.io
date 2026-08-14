@@ -1,0 +1,116 @@
+name: Update project previews
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 4 * * *"
+
+permissions:
+  actions: write
+  contents: write
+  pages: write
+
+concurrency:
+  group: project-preview-refresh
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Refresh website screenshots
+        run: npm run previews:update
+
+      - name: Validate site
+        run: |
+          npm test
+          git diff --check
+
+      - name: Commit changed previews
+        id: commit
+        shell: bash
+        run: |
+          git add -- \
+            assets/projects/tennis-review.webp \
+            assets/projects/gpt-image-pixel.webp \
+            assets/projects/ai-coding-handle-pixel.webp \
+            assets/projects/pptx2pdfcrop.webp \
+            assets/projects/hainan-pixel.webp
+
+          if git diff --cached --quiet; then
+            echo "Project previews are already current."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "chore: refresh project preview images"
+          git pull --rebase origin main
+          git push origin HEAD:main
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Trigger and verify publication
+        if: steps.commit.outputs.changed == 'true'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          head_sha="$(git rev-parse HEAD)"
+
+          gh workflow run ci.yml --ref main
+          gh api --method POST "repos/$GITHUB_REPOSITORY/pages/builds" > /dev/null
+
+          site_run_id=""
+          pages_run_id=""
+          for attempt in {1..30}; do
+            site_run_id="$(gh run list \
+              --workflow ci.yml \
+              --branch main \
+              --commit "$head_sha" \
+              --event workflow_dispatch \
+              --limit 20 \
+              --json databaseId \
+              --jq '.[0].databaseId')"
+            pages_run_id="$(gh run list \
+              --workflow pages-build-deployment \
+              --branch main \
+              --commit "$head_sha" \
+              --limit 20 \
+              --json databaseId \
+              --jq '.[0].databaseId')"
+
+            if [[ -n "$site_run_id" && -n "$pages_run_id" ]]; then
+              break
+            fi
+            sleep 5
+          done
+
+          if [[ -z "$site_run_id" || -z "$pages_run_id" ]]; then
+            echo "Unable to locate post-push checks for $head_sha." >&2
+            exit 1
+          fi
+
+          gh run watch "$site_run_id" --exit-status
+          gh run watch "$pages_run_id" --exit-status
+
+          pages_state="$(gh api "repos/$GITHUB_REPOSITORY/pages/builds/latest" \
+            --jq '[.commit, .status] | @tsv')"
+          if [[ "$pages_state" != "$head_sha"$'\t'"built" ]]; then
+            echo "Latest Pages build does not match the refreshed commit: $pages_state" >&2
+            exit 1
+          fi
