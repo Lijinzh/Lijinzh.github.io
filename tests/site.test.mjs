@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const html = readFileSync(join(root, 'index.html'), 'utf8');
+const clientScript = readFileSync(join(root, 'script.js'), 'utf8');
 const previewScript = readFileSync(join(root, 'tools', 'update-project-previews.mjs'), 'utf8');
 const previewWorkflow = readFileSync(join(root, '.github', 'workflows', 'update-project-previews.yml'), 'utf8');
 
@@ -18,6 +19,17 @@ test('homepage contains the requested personal sections', () => {
   assert.match(html, /data-theme="archive"/);
   assert.match(html, /data-theme="cathedral"/);
   assert.match(html, /data-theme="cosmos"/);
+});
+
+test('homepage provides an accessible and shareable English mode', () => {
+  assert.match(html, /data-language="zh-CN"/);
+  assert.match(html, /data-language="en"/);
+  assert.match(html, /hreflang="en"[^>]+\?lang=en/);
+  assert.match(html, /data-i18n-alt="alt\.tennis"/);
+  assert.match(clientScript, /new URLSearchParams\(window\.location\.search\)\.get\('lang'\)/);
+  assert.match(clientScript, /document\.documentElement\.lang = language/);
+  assert.match(clientScript, /Turn curiosity into/);
+  assert.match(clientScript, /window\.localStorage\.setItem\('gp-language'/);
 });
 
 test('every public repository is represented', () => {
