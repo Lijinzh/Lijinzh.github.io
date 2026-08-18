@@ -18,6 +18,11 @@ const targets = [
     output: 'assets/projects/gpt-image-pixel.webp',
   },
   {
+    name: 'Spark Bilingual',
+    url: 'https://lijinzh.github.io/SparkBilingual/',
+    output: 'assets/projects/spark-bilingual.webp',
+  },
+  {
     name: 'AI Coding Handle',
     imageUrl: 'https://zkolab.com/assets/images/pixel-hero.webp',
     output: 'assets/projects/ai-coding-handle-pixel.webp',

@@ -36,6 +36,7 @@ test('every public repository is represented', () => {
   for (const repository of [
     'TennisVideoHelper',
     'gpt-image-2-cli',
+    'SparkBilingual',
     'pptx2pdfcrop',
     'Communist-Manifesto-Releases',
     'RobotARMNN',
@@ -65,6 +66,7 @@ test('automated project previews are wired to local webp assets', () => {
   for (const asset of [
     'tennis-review.webp',
     'gpt-image-pixel.webp',
+    'spark-bilingual.webp',
     'ai-coding-handle-pixel.webp',
     'pptx2pdfcrop.webp',
     'hainan-pixel.webp',

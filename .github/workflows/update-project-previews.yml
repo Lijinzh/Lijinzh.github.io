@@ -47,6 +47,7 @@ jobs:
           git add -- \
             assets/projects/tennis-review.webp \
             assets/projects/gpt-image-pixel.webp \
+            assets/projects/spark-bilingual.webp \
             assets/projects/ai-coding-handle-pixel.webp \
             assets/projects/pptx2pdfcrop.webp \
             assets/projects/hainan-pixel.webp
