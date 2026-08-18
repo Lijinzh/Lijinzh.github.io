@@ -28,8 +28,8 @@ const targets = [
     output: 'assets/projects/pptx2pdfcrop.webp',
   },
   {
-    name: 'Hainan Travel Plan',
-    url: 'https://lijinzh.github.io/hainan-travel-plan/',
+    name: 'Travel Planner',
+    url: 'https://lijinzh.github.io/travel-planner/',
     output: 'assets/projects/hainan-pixel.webp',
   },
 ];

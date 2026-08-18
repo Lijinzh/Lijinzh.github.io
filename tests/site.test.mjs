@@ -39,7 +39,7 @@ test('every public repository is represented', () => {
     'pptx2pdfcrop',
     'Communist-Manifesto-Releases',
     'RobotARMNN',
-    'hainan-travel-plan',
+    'travel-planner',
   ]) {
     assert.ok(html.includes(repository), `missing repository: ${repository}`);
   }
