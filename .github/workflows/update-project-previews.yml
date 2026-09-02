@@ -46,6 +46,7 @@ jobs:
         run: |
           git add -- \
             assets/projects/tennis-review.webp \
+            assets/projects/scholar-analysis.webp \
             assets/projects/gpt-image-pixel.webp \
             assets/projects/spark-bilingual.webp \
             assets/projects/ai-coding-handle-pixel.webp \

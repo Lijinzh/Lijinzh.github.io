@@ -35,6 +35,7 @@ test('homepage provides an accessible and shareable English mode', () => {
 test('every public repository is represented', () => {
   for (const repository of [
     'TennisVideoHelper',
+    'ScholarAnalysis',
     'gpt-image-2-cli',
     'SparkBilingual',
     'pptx2pdfcrop',
@@ -65,6 +66,7 @@ test('external blank targets use noreferrer', () => {
 test('automated project previews are wired to local webp assets', () => {
   for (const asset of [
     'tennis-review.webp',
+    'scholar-analysis.webp',
     'gpt-image-pixel.webp',
     'spark-bilingual.webp',
     'ai-coding-handle-pixel.webp',

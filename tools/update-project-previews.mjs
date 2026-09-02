@@ -13,6 +13,11 @@ const targets = [
     output: 'assets/projects/tennis-review.webp',
   },
   {
+    name: 'ScholarAnalysis',
+    url: 'https://lijinzh.github.io/ScholarAnalysis/',
+    output: 'assets/projects/scholar-analysis.webp',
+  },
+  {
     name: 'GPT Image 2 CLI',
     url: 'https://lijinzh.github.io/gpt-image-2-cli/',
     output: 'assets/projects/gpt-image-pixel.webp',
