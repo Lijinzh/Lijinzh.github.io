@@ -79,11 +79,12 @@ test('automated project previews are wired to local webp assets', () => {
   }
 });
 
-test('preview refresh is scheduled and explicitly redeploys GitHub Pages', () => {
+test('preview refresh waits for the automatic GitHub Pages deployment', () => {
   assert.match(previewWorkflow, /workflow_dispatch:/);
   assert.match(previewWorkflow, /cron: ["']17 4 \* \* \*["']/);
   assert.match(previewWorkflow, /permissions:[\s\S]*contents: write/);
   assert.match(previewWorkflow, /permissions:[\s\S]*pages: write/);
   assert.match(previewWorkflow, /gh workflow run ci\.yml --ref main/);
-  assert.match(previewWorkflow, /pages\/builds/);
+  assert.match(previewWorkflow, /pages-build-deployment/);
+  assert.doesNotMatch(previewWorkflow, /gh api --method POST [^\n]*pages\/builds/);
 });
