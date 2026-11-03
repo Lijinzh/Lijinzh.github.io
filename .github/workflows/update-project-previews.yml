@@ -66,7 +66,7 @@ jobs:
           git push origin HEAD:main
           echo "changed=true" >> "$GITHUB_OUTPUT"
 
-      - name: Trigger and verify publication
+      - name: Trigger checks and verify publication
         if: steps.commit.outputs.changed == 'true'
         shell: bash
         env:
@@ -75,7 +75,8 @@ jobs:
           head_sha="$(git rev-parse HEAD)"
 
           gh workflow run ci.yml --ref main
-          gh api --method POST "repos/$GITHUB_REPOSITORY/pages/builds" > /dev/null
+          # The push to main already starts GitHub Pages. A second manual Pages
+          # build races the automatic one and causes one deployment to cancel.
 
           site_run_id=""
           pages_run_id=""
