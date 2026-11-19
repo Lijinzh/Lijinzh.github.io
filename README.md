@@ -8,6 +8,8 @@ JinZhe Li（Golden Philosophy）的个人 GitHub Pages 主页。
 - 多模态感知、机器人控制、人机 / Agent 交互与可靠 AI 工具等研究兴趣
 - 目前正在持续实验和验证的研究内容
 
+[灵巧手与可打印假手调研](https://lijinzh.github.io/dexterous-hands/) 是「正在研究」下的交互子页。公开资料的来源和许可随页面附上，评级仅保存在访客的浏览器。
+
 ## 本地预览
 
 这是一个无构建依赖的静态站点。在仓库目录启动任意静态文件服务器即可，例如：

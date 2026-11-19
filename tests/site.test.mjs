@@ -47,13 +47,18 @@ test('every public repository is represented', () => {
   }
 });
 
-test('local page assets exist', () => {
-  const refs = [...html.matchAll(/(?:src|href)=["']([^"'#?]+)["']/g)]
-    .map((match) => match[1])
-    .filter((ref) => !/^(?:https?:|mailto:|tel:)/.test(ref));
-
-  for (const ref of refs) {
-    assert.ok(existsSync(join(root, ref)), `missing local asset: ${ref}`);
+test('homepage and the public hand survey have resolvable local assets', () => {
+  const survey = 'dexterous-hands/index.html';
+  assert.match(html, /href="\.\/dexterous-hands\/"/);
+  const surveyHtml = readFileSync(join(root, survey), 'utf8');
+  assert.match(surveyHtml, /href="\.\.\/"/);
+  for (const [file, content] of [['index.html', html], [survey, surveyHtml]]) {
+    const refs = [...content.matchAll(/(?:src|href)=["']([^"'#?]+)["']/g)]
+      .map((match) => match[1])
+      .filter((ref) => !/^[a-z][a-z0-9+.-]*:/i.test(ref));
+    for (const ref of refs) {
+      assert.ok(existsSync(resolve(root, dirname(file), ref)), `missing local asset in ${file}: ${ref}`);
+    }
   }
 });
 
