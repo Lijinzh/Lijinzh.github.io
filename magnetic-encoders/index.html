@@ -75,7 +75,7 @@ figcaption{color:var(--muted);font-size:.83em;line-height:1.5}.assembly{margin:1
 <div class="grid">
 <div class="card"><span class="tag">01 · 专用角度首选</span><b>AS5048B</b><p>14 bit，0.02197°/码；两根地址脚直接选四档。用四颗做一根手指的基准方案。</p></div>
 <div class="card"><span class="tag">02 · 最小封装首选</span><b>TMAG3001A1</b><p>0.83 × 1.32 mm，单脚选四档。三轴芯片能输出 XY 角度，有条件明确的误差上限。</p></div>
-<div class="card"><span class="tag">单主控 · 六路 I²C</span><b>STM32U595 · 7 × 7 mm</b><p>UFBGA132 六路 Arduino 草图编译通过。五指各一路，留第六路；掌板用一根 Type‑C 线做 DFU 烧录与 CDC 回传。极限体积见 WLCSP150。</p></div>
+<div class="card"><span class="tag">单主控 · 六路 I²C</span><b>STM32U595 · 7 × 7 mm</b><p>UFBGA132 六路 Arduino 草图编译通过。五指各一路，留第六路；掌板用 Type‑C 做 DFU 与 CDC，外置夹具负责免按键烧录。极限体积见 WLCSP150。</p></div>
 </div>
 <div class="note"><p>首板建议 <b>400 kHz</b>、每关节目标采集 150 Hz，验收 ≥120 Hz 有效新样本。<b>14 bit 是输出刻度，精度看角误差上限及整机关节实测。</b>如按装机最大误差 ≤0.5° 验收，使用独立角度基准测整机关节。</p></div>
 <div class="scroll" tabindex="0"><table class="rank"><thead><tr><th>推荐顺序 / 具体型号</th><th>封装标称本体（mm）</th><th>分辨率 / 原厂角误差</th><th>原生 I²C / 地址设置</th><th>角更新 / 选择理由</th></tr></thead><tbody>
@@ -208,17 +208,37 @@ figcaption{color:var(--muted);font-size:.83em;line-height:1.5}.assembly{margin:1
 </details>
 </section>
 
-<section id="flash"><h2>烧录：首选 Type‑C 上的原厂 ROM DFU</h2>
-<div class="scroll" tabindex="0"><table><thead><tr><th>方式</th><th>接法与操作</th><th>用在什么时候</th></tr></thead><tbody>
-<tr><td><b>USB DFU</b></td><td>Type‑C D− / D+ 接 PA11 / PA12；配置 16 MHz HSE 晶振。按住 BOOT（PH3 拉高），按一下 RESET，然后松开 BOOT。STM32CubeProgrammer 选 USB、识别 DFU 设备后连接，写入固件并勾选校验（使用默认 Flash 起址的应用 .bin 填 0x08000000；.hex 自带地址）；BOOT 回到低电平后按 RESET 启动。</td><td>日常首烧和升级；USB 线同时作为工作时的 CDC 数据线。</td></tr>
-<tr><td><b>USART ROM 烧录</b></td><td>用 3.3 V USB 转 TTL：适配器 RX 接 PA2（USART2 TX），TX 接 PA3（USART2 RX），共地。按同样方式进 BOOT，STM32CubeProgrammer 选 UART。原厂另列 USART1 PA9/PA10 和 USART3 PC10/PC11。</td><td>USB 路径调试和应急；掌板留 TX/RX/GND 测试点。</td></tr>
-<tr><td><b>SWD</b></td><td>留 SWDIO（PA13）、SWCLK（PA14）、NRST、GND、3.3 V 参考焊盘。</td><td>恢复启动选项、断点和首板排障，工具可临时接入。</td></tr>
+<section id="flash"><h2>免按键烧录：PlatformIO、外置夹具和 USB DFU</h2>
+<div class="note"><p><b>掌板可以省掉 BOOT 和 RESET 按键。</b>把 USB 控制桥和两路驱动放进外置夹具，掌板预留 <b>BOOT0、NRST、3.3 V 参考和 GND</b> 四个接触点。写入走掌板的原生 USB‑C；固件启动后，同一个 USB‑C 接口传 CDC 数据。</p></div>
+<h3>ESP32 双三极管电路的迁移</h3>
+<p>可以沿用 ESP32 的 DTR/RTS 自动时序和带握手线的 USB 转串口芯片。STM32 端改成两路独立驱动：ESP32 参考图在复位采样时要求 <code>IO0=0</code>；U595/U599 的常用 BOOT 配置在采样时要求 <code>PH3/BOOT0=1</code>。原 ESP32 双 NPN 交叉互锁在两线同态时释放两路；STM32 方案需要稳定保持 <code>BOOT0=1</code> 和 <code>NRST=0</code>，并在放开 NRST 后继续保持 BOOT0 为高。</p>
+<div class="scroll" tabindex="0"><table><thead><tr><th scope="col">夹具信号</th><th scope="col">驱动与掌板接线</th><th scope="col">实际动作</th></tr></thead><tbody>
+<tr><td><b>DTR#</b>（低有效）</td><td>经 3.3 V 反相器（如 <a href="https://www.ti.com/product/SN74LVC1G04">SN74LVC1G04</a>）接 PH3/BOOT0；掌板用 10 kΩ 下拉。</td><td>DTR 有效时拉高 BOOT0；拔下夹具后 BOOT0 由下拉保持为低。</td></tr>
+<tr><td><b>RTS#</b>（低有效）</td><td>经 3.3 V 同相开漏缓冲器（如 <a href="https://www.ti.com/product/SN74LVC1G07">SN74LVC1G07</a>）接 NRST；掌板按 ST 参考电路保留 0.1 µF。</td><td>RTS 有效时拉低 NRST；释放后由内部上拉拉高。</td></tr>
+<tr><td><b>3.3 V 参考 / GND</b></td><td>夹具与掌板共地，按目标 3.3 V 电平设计；夹具驱动输入默认拉高，考虑掉电隔离。桥接模块选实际引出 DTR# 和 RTS# 的款式。</td><td>正常使用时拔下夹具，仅保留掌板 USB‑C 供电和 CDC。</td></tr>
 </tbody></table></div>
-<p>保留系统存储区启动入口。常用的非 TrustZone 配置按 AN2606 的 Pattern 12：<code>TZEN=0</code>、<code>nSWBOOT0=1</code>、<code>NSBOOTADD1[24:0]=0x17F200</code>，复位时由 BOOT0 电平选启动路径。ROM DFU 支持 8、12、16、20、24、26、32 MHz 晶振；16 MHz 可沿用 Nucleo 的参考设计。烧录后用硬件 RESET 启动应用。Linux 上可用 <code>lsusb</code> 看 DFU 设备，应用启动后用 <code>/dev/ttyACM*</code> 打开 CDC。STM32duino 上传菜单提供 <b>STM32CubeProgrammer (DFU)</b> 和 <b>STM32CubeProgrammer (Serial)</b>；也可先在 Arduino IDE 编译，再用 CubeProgrammer 图形界面烧录。<span class="evidence"><a href="https://www.st.com.cn/resource/en/application_note/an2606-introduction-to-system-memory-boot-mode-on-stm32-mcus-stmicroelectronics.pdf#page=36">BOOT 选项</a> <a href="https://www.st.com.cn/resource/en/application_note/an2606-introduction-to-system-memory-boot-mode-on-stm32-mcus-stmicroelectronics.pdf#page=535">晶振与 UART</a> <a href="https://www.st.com.cn/resource/en/application_note/an2606-introduction-to-system-memory-boot-mode-on-stm32-mcus-stmicroelectronics.pdf#page=537">DFU 引脚</a> <a href="https://www.st.com.cn/resource/en/application_note/an2606-introduction-to-system-memory-boot-mode-on-stm32-mcus-stmicroelectronics.pdf#page=540">复位依据</a> <a href="https://www.st.com.cn/en/development-tools/stm32cubeprog.html">CubeProgrammer</a> <a href="https://github.com/stm32duino/Arduino_Core_STM32/blob/3.1.0/boards.txt">STM32duino 上传菜单</a></span></p>
+<p class="small">依据：<a href="https://dl.espressif.com/dl/schematics/esp32_devkitc_v4-sch.pdf">Espressif 原双 NPN 原理图</a> · <a href="https://www.st.com.cn/resource/en/datasheet/stm32u595zi.pdf#page=32">STM32 BOOT 选择</a> · <a href="https://www.st.com.cn/resource/en/datasheet/stm32u595zi.pdf#page=268">NRST 电路</a> · <a href="https://pyserial.readthedocs.io/en/latest/pyserial_api.html#serial.Serial.open">pySerial：串口打开时的握手线状态</a>。</p>
+<h3>从 PlatformIO 点一次 Upload</h3>
+<ol>
+<li><b>准备一次：</b>掌板 USB‑C 和外置夹具都接电脑。掌板 D−/D+ 接 PA11/PA12，HSE 用 16 MHz。按 AN2606 核对非 TrustZone 的 Pattern 12：<code>TZEN=0</code>、<code>nSWBOOT0=1</code>、<code>NSBOOTADD1=0x17F200</code>。按复现包的 <code>--identify</code> 命令用夹具进入 ROM，登记目标的 DFU 序号；以 RDP Level 0 验证 Flash 读回。</li>
+<li><b>自动进 ROM：</b>脚本打开并持有同一个控制串口。先拉高 BOOT0，等 50 ms；将 NRST 拉低 50 ms 后释放，再保持 BOOT0 为高 100 ms，最后将 BOOT0 拉低。这组延时是脚本的台架起点。</li>
+<li><b>写入、读回、启动：</b>按 DFU 序号匹配设备，从 <code>0x08000000</code> 写入应用 .bin，逐字节比较读回数据。校验成功后保持 BOOT0 为低并再次给 NRST 一个低脉冲，启动应用。U59x ROM 跳回应用有版本相关勘误，硬件复位适合用作固定退出路径。</li>
+</ol>
+<p>PlatformIO 用 <code>upload_protocol = custom</code> 将 <code>upload_command</code> 指向夹具脚本；VS Code 的 <b>Upload</b> 按钮与命令 <code>pio run -e u595qii -t upload</code> 调用同一流程。复现包默认运行模拟；接好专用夹具后按包内说明设置 <code>--flash</code>、串口和 DFU 序号。电脑可以用外置 USB Hub 合并夹具和掌板的两条 USB 链路。</p>
+<p class="small">官方资料：<a href="https://www.st.com.cn/resource/en/application_note/an2606-introduction-to-system-memory-boot-mode-on-stm32-mcus-stmicroelectronics.pdf#page=36">Pattern 12</a> · <a href="https://www.st.com.cn/resource/en/application_note/an2606-introduction-to-system-memory-boot-mode-on-stm32-mcus-stmicroelectronics.pdf#page=535">晶振与 UART</a> · <a href="https://www.st.com.cn/resource/en/application_note/an2606-introduction-to-system-memory-boot-mode-on-stm32-mcus-stmicroelectronics.pdf#page=537">DFU 引脚</a> · <a href="https://www.st.com.cn/resource/en/application_note/an2606-introduction-to-system-memory-boot-mode-on-stm32-mcus-stmicroelectronics.pdf#page=540">跳转勘误</a> · <a href="https://docs.platformio.org/en/latest/projectconf/sections/env/options/upload/upload_command.html">PlatformIO 自定义上传</a> · <a href="https://dfu-util.sourceforge.net/dfu-util.1.html">dfu-util 定位设备和读写</a>。</p>
+<h3>2026-11-21 实验记录</h3>
+<div class="scroll" tabindex="0"><table><thead><tr><th scope="col">实验</th><th scope="col">结果</th></tr></thead><tbody>
+<tr><td><b>实际编译</b></td><td>PlatformIO Core 6.2.0、ST STM32 20.0.0、STM32duino 3.1.0。为 7 × 7 mm 的 U595QII6Q 建立自定义板型，六路 <code>TwoWire</code> 与 CDC 接口编译成功，生成 40,552 B 的 <code>firmware.bin</code>。</td></tr>
+<tr><td><b>一键上传入口</b></td><td>运行 <code>pio run -e u595qii -t upload</code>，PlatformIO 把本次构建的 .bin 传给自定义脚本。在模拟 Flash 中写入 40,560 B（含末尾对齐填充），读回一致，时序记录包含最后的应用复位脉冲。</td></tr>
+<tr><td><b>故障注入</b></td><td>主机模拟分别注入读回字节错误和 DFU 写入失败。两次都在错误处结束，并跳过应用复位脉冲。另以串口和子进程记录器复核实机入口的 DFU 序号筛选、写入地址、读回长度和复位顺序。</td></tr>
+</tbody></table></div>
+<p><a href="magnetic_encoder_u595_platformio.zip" download>下载 PlatformIO 复现包</a>（自定义板型、六路草图、烧录脚本、实验日志和操作说明）。</p>
+<h3>日常单线升级和备用接口</h3>
+<p>若希望日常插一根掌板 USB‑C 就开始自动升级，可在应用中实现 CDC 更新命令，配合驻留 USB 引导程序；空白片首烧和故障恢复交给夹具。现阶段优先走夹具和原厂 ROM。掌板也可把 PA2/PA3 引到夹具，以 USART2 ROM 烧录作后备：3.3 V 电平、TX/RX 交叉、115200 8E1，烧录时选定 UART 一条数据路径。另留 PA13/PA14 的 SWD 焊盘，供启动配置恢复和首板调试。</p>
 </section>
 
 <section id="usb-cdc"><h2>USB‑C 原生 CDC：接线、速度与落地顺序</h2>
-<div class="note"><p><b>一根 USB‑C 线覆盖供电、DFU 烧录和 CDC 数据。</b>掌板固定为 USB 设备 / 受电端。20 轴、150 Hz 的二进制角度流约 <b>7.8 kB/s</b>；24 轴约 <b>9.0 kB/s</b>。USB FS 的带宽已满足整手角度流；首板硬件按 HS 参考走线，应用可以沿用官方 CDC 配置。</p></div>
+<div class="note"><p><b>掌板的 USB‑C 接口负责供电、DFU 和 CDC 数据。</b>免按键进 ROM 由外置夹具触发。掌板固定为 USB 设备 / 受电端。20 轴、150 Hz 的二进制角度流约 <b>7.8 kB/s</b>；24 轴约 <b>9.0 kB/s</b>。USB FS 的带宽已满足整手角度流；首板硬件按 HS 参考走线，应用可以沿用官方 CDC 配置。</p></div>
 <div class="scroll" tabindex="0"><table><thead><tr><th>运行方式</th><th>USB 2.0 线速</th><th>Bulk 单包 / 理论单向载荷</th><th>用于本项目</th></tr></thead><tbody>
 <tr><td>CDC Full Speed</td><td>12 Mbit/s</td><td>64 B / 约 1.216 MB/s</td><td>适合整手角度流。按 20 × 2 + 12 B 的示例打包，帧率 150 Hz 时 52 B × 150 = 7,800 B/s。</td></tr>
 <tr><td>CDC High Speed</td><td>480 Mbit/s</td><td>512 B / 约 53.248 MB/s</td><td>用 U595/U599 的片上 HS PHY，适合扩展高频原始数据和调试采集。持续吞吐以实际程序和主机批量读写的验收记录为准。</td></tr>
@@ -372,6 +392,7 @@ figcaption{color:var(--muted);font-size:.83em;line-height:1.5}.assembly{margin:1
 <ol>
 <li><b>采购与贴装：</b>核对 U595QII6Q、U595ZIY6QTR 的实际供货及掌板扇出，再提交嘉立创样板 DFM、BOM 和贴装审核。补查 A1335N 的国内 SMT 料号、采购表尚缺的实物图、MPS 四款 I²C 编码器的完整规格书；扩展调研带四地址的小封装高分辨率编码器。</li>
 <li><b>开发板与掌板：</b>用 NUCLEO-U5A5ZJ-Q 验收 CN15 的 DFU、首次烧录和复位切回 CDC。在掌板逐项验证 BOOT、USART2、SWD、Type‑C 正反插、C‑to‑C / A‑to‑C 及冷启动枚举。</li>
+<li><b>免按键台架验收：</b>接入 U595 样板，示波器记录夹具开闭串口、冷插拔、掉电和整套 BOOT0/NRST 时序。登记 DFU 序号和内部 Flash 接口，实测在空白片和应用异常两种状态下完成一键写入、读回、复位和 CDC 枚举。按实际晶振配置掌板应用时钟与 USB PHY，再记录成功次数与耗时。</li>
 <li><b>持续采集：</b>接齐五指与备用通道，按 120 Hz 有效样本率、整帧序号和实测延迟验收，记录 12M / 480M 协商结果与 CDC 持续吞吐。分别测线束故障恢复、相邻磁铁串扰和装机角误差。</li>
 </ol>
 </section>
