@@ -59,7 +59,9 @@ footer{padding:0 max(2vw,16px) 26px;color:var(--muted)}
 .gallery figure,.extra-photos figure,.assembly{margin:0}.gallery img,.extra-photos img{width:100%;height:142px;object-fit:contain;background:#fff;border:1px solid var(--line);border-radius:6px}
 figcaption{color:var(--muted);font-size:.83em;line-height:1.5}.assembly{margin:14px 0}.assembly svg{display:block;width:min(100%,740px);height:auto}.archive{padding:15px}.archive section:last-child{margin-bottom:0}
 @media(max-width:490px){.gallery img,.extra-photos img{height:100px}.rank{min-width:700px}}
-@media print{.rank{min-width:0}}
+#arduino table:not(.rank),#flash table,#usb-cdc table{min-width:620px}
+#usb-cdc td:nth-child(2){white-space:nowrap}
+@media print{.rank,#arduino table:not(.rank),#flash table,#usb-cdc table{min-width:0}}
 </style>
 </head>
 <body>
