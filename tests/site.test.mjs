@@ -51,6 +51,12 @@ test('homepage and the public hand survey have resolvable local assets', () => {
   const survey = 'dexterous-hands/index.html';
   assert.match(html, /href="\.\/dexterous-hands\/"/);
   const surveyHtml = readFileSync(join(root, survey), 'utf8');
+  const photoCredits = readFileSync(join(root, 'assets/dexterous-hands/credits.txt'), 'utf8');
+  for (const image of surveyHtml.matchAll(/<img\b[^>]*>/g)) {
+    assert.match(image[0], /data-kind="physical-photo"/, 'catalog images must be curated as physical photos');
+    const asset = image[0].match(/src="\.\.\/assets\/dexterous-hands\/photos\/([^"]+)"/)?.[1];
+    assert.ok(asset && photoCredits.includes(`- ${asset}\uFF1A`), `missing image source: ${asset}`);
+  }
   assert.match(surveyHtml, /href="\.\.\/"/);
   for (const [file, content] of [['index.html', html], [survey, surveyHtml]]) {
     const refs = [...content.matchAll(/(?:src|href)=["']([^"'#?]+)["']/g)]

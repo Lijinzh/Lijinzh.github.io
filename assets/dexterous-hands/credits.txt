@@ -27,42 +27,99 @@ SolidWorks 改孔请用原件，仿真或避碰请下载对应版本的原始模
 
 网页发布不含未获明确许可的 New Dexterity 或 UT 单指几何，也不含论文原件及 CAD 包；采购、装配和仿真用原项目资料。
 
-## 图片来源与许可
+## 实物照片来源
 
-条目信息下方保留原始出处。开放模型渲染图按上表的相应来源许可展示，为网页重渲染并缩放为 WebP。其余随页图片见下；调整大小或格式为 WebP。
+随页缩略图只采用实体产品照或实际样机视频画面，按图注明型号证据和出处。网页缩图可能裁切或转换为 WebP；外部来源保留原照片、论文或演示。
 
-- cambridge-figure-2.webp：Thomas Gilday 等，图 2
-  来源 https://doi.org/10.1088/1748-3190/abe345
-  许可 CC BY 4.0 https://creativecommons.org/licenses/by/4.0/
-- source-f87e24965e99.webp：Huayue Liang 等，CDF-Glove 图 2
-  来源 https://arxiv.org/abs/2603.05804v1
-  许可 CC BY 4.0 https://creativecommons.org/licenses/by/4.0/
-- source-30f97139ae5e.webp：Xinqi Lucas Liu 等，Ruka-v2 图 2
-  来源 https://arxiv.org/abs/2603.26660v2
-  许可 CC BY 4.0 https://creativecommons.org/licenses/by/4.0/
-- source-220e24f0dab4.webp：Xinqi Lucas Liu 等，Ruka-v2 表 1 中的 Ruka v1 图
-  来源 https://arxiv.org/abs/2603.26660v2
-  许可 CC BY 4.0 https://creativecommons.org/licenses/by/4.0/
-- source-201754c9ac64.webp：Clemens C. Christoph 等，ORCA 主图
-  来源 https://arxiv.org/abs/2504.04259v2
-  许可 CC BY 4.0 https://creativecommons.org/licenses/by/4.0/
-- source-8f240e1dcf81.webp：Zhengyang Kris Weng，BiDexHand 项目图
+- 3b-a402-model.webp：3B Scientific A40/2 松散式教学骨架产品照；不代表同系其他款
+  来源 https://www.anatomystuff.co.uk/products/loose-hand-skeleton-model-on-elastic
+- act-hand-cmu-bench.webp：CMU ACT 手指机构台架实拍
+  来源 https://www.ri.cmu.edu/project/anatomically-correct-testbed-act-hand/
+- act-hand-cmu.webp：CMU ACT 仿生手实拍，与人手对比
+  来源 https://www.ri.cmu.edu/project/anatomically-correct-testbed-act-hand/
+- aero-hand-physical.webp：Aero Hand Open 白色打印样机，作者实机演示画面
+  来源 https://github.com/Chestnut-Robotics/aero-hand-open/blob/main/assets/sequence_square.mp4
+- bidex-v4-physical.webp：BiDexHand 作者的样机实拍；展示照以项目版本说明为准
   来源 https://github.com/wengmister/BiDexHand
   许可 MIT https://github.com/wengmister/BiDexHand/blob/main/LICENSE
-- source-9d6cf835dfd7.webp：Open YTA Hand 作者的 CAD 预览
-  来源 https://github.com/gigalgi/open-yta-hand
-  许可 Apache-2.0 https://github.com/gigalgi/open-yta-hand/blob/main/LICENSE
-- source-9115ecbd5c20.webp：Ernest Wang，Hand Kinematics 项目图
-  来源 https://github.com/ErnestWang31/hand-kinematics
-  许可 MIT https://github.com/ErnestWang31/hand-kinematics/blob/main/LICENSE
-- source-fa23288b2b6c.webp：Dean Zadok，DigiArm 项目图
+- bytedexter-hardware.webp：ByteDexter 台架样机实拍，作者技术报告视频画面
+  来源 https://byte-dexter.github.io/
+- cambridge-passive-prototype.webp：剑桥被动手样机测试实拍，Gilday 等（2021）图 2
+  来源 https://doi.org/10.1088/1748-3190/abe345
+  许可 CC BY 4.0 https://creativecommons.org/licenses/by/4.0/
+- cdf-glove-prototype.webp：CDF-Glove 实物，Huayue Liang 等论文图 2 的照片局部
+  来源 https://arxiv.org/abs/2603.05804v1
+  许可 CC BY 4.0 https://creativecommons.org/licenses/by/4.0/
+- digiarm-prototype.webp：DigiArm 团队实拍：带外壳打印样机
   来源 https://github.com/deanzadok/digiarm
   许可 Apache-2.0 https://github.com/deanzadok/digiarm/blob/main/LICENSE
-- source-7ac4dd2e7c1a.webp：Matheus Soranco，Jensen Hand 项目渲染
-  来源 https://github.com/Matheussoranco/Jensen-prosthetics
-  许可 CC BY-NC-SA 4.0 https://creativecommons.org/licenses/by-nc-sa/4.0/
-
-其他图示用原项目或出版物的外链。
+- dlut-equipment-photo.webp：大连理工共享仪器实拍：机械臂及末端配置
+  来源 https://gxpt.dlut.edu.cn/dlut/equipment/2498
+- leap-v2-advanced-mounted.webp：LEAP Hand V2 Advanced 安装后的原厂样机实拍
+  来源 https://v2-adv.leaphand.com/leap_cad
+- makerworld-22-axis-print.webp：作者实拍：22 轴可手拨的假手打印件
+  来源 https://makerworld.com/en/models/3145492-anatomically-inspired-articulated-robotic-hand
+- midas-physical-demo.webp：MIDAS 四指硬件样机，作者测试视频画面
+  来源 https://midas-hand.com/data/demo/hardware_test.mp4
+- new-dexterity-physical.webp：奥克兰大学 New Dexterity 实体手，作者项目正背对照
+  来源 https://github.com/newdexterity/24dof-robotic-hand#readme
+- orca-v1-hardware.webp：ORCA Hand v1 论文主图中的实体样机；Clemens C. Christoph 等
+  来源 https://arxiv.org/abs/2504.04259v2
+  许可 CC BY 4.0 https://creativecommons.org/licenses/by/4.0/
+- rice-instrumented-prototype.webp：Rice 拇、食、中三指被动测角样机实拍
+  来源 https://mahilab.rice.edu/research/open-source-passive-instrumented-mannequins-wearable-robots
+- robotis-hx5-d20-demo.webp：ROBOTIS HX5-D20 原厂实机操作演示；照片未标机械修订号
+  来源 https://ai.robotis.com/hands/operation_hands.html
+- robotis-hx5-d20-side.webp：ROBOTIS HX5-D20 原厂实拍侧面
+  来源 https://ai.robotis.com/hands/operation_hands.html
+- ruka-v1-physical.webp：Ruka v1 实物；Xinqi Lucas Liu 等，Ruka-v2 论文表 1
+  来源 https://arxiv.org/abs/2603.26660v2
+  许可 CC BY 4.0 https://creativecommons.org/licenses/by/4.0/
+- ruka-v2-usb-demo.webp：Ruka-v2 实机插拔 USB，作者项目原视频画面
+  来源 https://ruka-hand-v2.github.io/static/videos/usb_plugging.mp4
+- shadow-series-photo.webp：Shadow Dexterous Hand 系列厂商实拍；照片未逐只注明配置
+  来源 https://shadowrobot.com/dexterous-hand-series/
+- sharpa-wave-demo.webp：Sharpa Wave 实手测试近景，官网视频画面
+  来源 https://www.sharpa.com/pages/wave
+- sharpa-wave-gesture.webp：Sharpa Wave 实手姿态，官网视频画面
+  来源 https://www.sharpa.com/pages/wave
+- sia-hand-photo.webp：中科院沈阳自动化所设备实拍，原页面未标明全部版本细节
+  来源 http://rlab.sia.cas.cn/kyssyjsfw/zyyqsb/ren/202112/t20211227_603652.html
+- tesollo-dg5fm-demo.webp：Tesollo DG‑5F‑M 实机抓持，厂商策略学习演示画面
+  来源 https://www.tesollo.com/cn/products/grippers/dg-5f-m
+- uji-hand-team.webp：UJI 团队手持义肢的实拍局部；照片未标明是否为 MK4
+  来源 https://espaitec.uji.es/en/uji-hand/
+- unitree-dex5-live.webp：宇树 Dex5 系列实机抓取，官网演示；画面未标明 S 或 Pro
+  来源 https://www.unitree.com/Dex5-S/
+- wuji-v1-hardware.webp：舞肌第一代样机，官网实机演示封面
+  来源 https://www.wuji.tech/en/hand
+- wuji-v2-pinch-photo.webp：舞肌手 2 系列官网夹持演示照片；未标注是否为 2.2
+  来源 https://wuji.tech/en/hand2
+- zju-hand-kit.webp：浙大工程师学院设备目录实拍：手和配套件
+  来源 https://atc.zju.edu.cn/instrument/detail-3718.html
+- zju-plus-kit.webp：浙大电气学院设备目录实拍：灵巧手和运输箱
+  来源 https://atc.zju.edu.cn/mobile/instrument/detail?id=5393
+- shadow-pneumatic-2007.webp：2007 年公开的早期 Shadow 气动手实物 · Richard Greenhill、Hugo Elias
+  来源 https://commons.wikimedia.org/wiki/File:Shadow_Hand_Bulb_large.jpg
+  网页副本缩小并转为 WebP；CC BY-SA 3.0 https://creativecommons.org/licenses/by-sa/3.0/
+- zwhand-b21-zsrw-14s.webp：兆威 B21 官网实拍：展台负重测试，握持的哑铃遮挡部分手指
+  来源 https://www.zwhand.com/products/b21
+  视频 00:14 https://www.zwhand.com/assets/official/videos/zsrw.mp4
+- rapid-hand-teleop-photo.webp：RAPID Hand 实物：中山大学项目远程操作台架上的红色灵巧手
+  来源 https://github.com/SYSU-RoboticsLab/RAPID-Hand/blob/main/RapidTeleop/assets/images/leader_follower_1_00.png
+  SYSU Robotics Lab；网页副本裁切并转为 WebP；CC BY-NC-SA 4.0 https://creativecommons.org/licenses/by-nc-sa/4.0/
+- apex-hand-developer-photo.webp：Apex Hand 实拍：开发者现场使用的左手；右侧模型对应右手
+  来源 https://peterpanstechland.github.io/zh-Hans/docs/hackathons/2026/aix-origin-apex-hand/real-hand-sdk
+- prima-1-wrc-photo.webp：曦诺 Prima 1 展台实拍
+  来源 https://www.leiphone.com/category/robot/524JbeGS3fgGgQeA.html
+- inspire-rh524j1-wrc-photo.webp：因时 RH524J1 展台实拍：五指和拇指可见
+  来源 https://www.leiphone.com/category/robot/524JbeGS3fgGgQeA.html
+- zwhand-b21-mechanism-at-wrc.webp：兆威 B21 展台实拍：铭牌标为 B21，拆开陈列掌体、四指与拇指
+  来源 https://www.leiphone.com/category/robot/524JbeGS3fgGgQeA.html
+- brainco-revo3-wrc.webp：强脑 Revo 3 展台实拍：报道标注型号，五指和拇指根部可见
+  来源 https://m.leiphone.com/category/private/pPz5728KyVly9tgr.html
+- xynova-flex-icra2.webp：曦诺 Flex 2 实机：ICRA 展台演示
+  来源 https://www.agentren.cn/2026/0605/17254.shtml
 
 ## 随附许可文本
 

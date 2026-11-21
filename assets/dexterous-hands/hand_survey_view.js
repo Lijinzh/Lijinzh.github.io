@@ -238,7 +238,6 @@
     // 单一 GPU 上下文在展开的条目之间移动，浏览整页也不需要为每张卡加载一个上下文。
     function dockTo(slot) {
       if (activeSlot) {
-        activeSlot.media.classList.remove('viewer-active');
         activeSlot.card.classList.remove('model-active');
         activeSlot.launch.hidden=false;
         activeSlot.close.hidden=true;
@@ -248,7 +247,6 @@
       dockEmpty.hidden=!slot;
       if (slot) {
         slot.card.classList.add('model-active');
-        slot.media.classList.add('viewer-active');
         slot.launch.hidden=true;
         slot.close.hidden=false;
         slot.brief.hidden=false;
@@ -260,7 +258,8 @@
     $('return-model').addEventListener('click',()=>{dockTo(null); show(selected()); stage.focus();});
     function inlineModel(card,item,record) {
       const parent=record ? card.querySelector('.detail') : card;
-      let photo=parent.querySelector(record?'.gallery':'.cad-photo');
+      // 把照片与出处整体放左侧；暂无实拍时，左侧保留说明。
+      const photo=parent.querySelector('.gallery');
       if (!photo) return;
       const media=document.createElement('div'), slot=document.createElement('div');
       const left=document.createElement('div'), brief=document.createElement('div');
@@ -276,7 +275,7 @@
       const end=document.createElement('button'); end.type='button'; end.textContent='收起模型';
       close.append(item.name,end);
       slot.append(launch,close);
-      const target={slot,media,card,launch,close,brief,key:item.key};
+      const target={slot,card,launch,close,brief,key:item.key};
       launch.addEventListener('click',()=>{
         choice.value=item.key; dockTo(target); show(item);
         if (!stage.hidden) stage.focus({preventScroll:true});
