@@ -120,6 +120,14 @@ SolidWorks 改孔请用原件，仿真或避碰请下载对应版本的原始模
   来源 https://m.leiphone.com/category/private/pPz5728KyVly9tgr.html
 - xynova-flex-icra2.webp：曦诺 Flex 2 实机：ICRA 展台演示
   来源 https://www.agentren.cn/2026/0605/17254.shtml
+- dexhand021-base-physical.webp：DexHand021 基础款左手实拍：12 电机样机做掌内方块旋转；右侧三维对应右手
+  来源 https://github.com/Chen-WH/dexrobot021-mjlab#demos
+  Chen-WH / dexrobot021-mjlab；摘取实机视频单帧并转换为 WebP；Apache-2.0 https://github.com/Chen-WH/dexrobot021-mjlab/blob/main/LICENSE
+- dexhand021-pro-physical.webp：DexHand021 Pro 官方实机：安装在机械臂上展开手指
+  来源 https://www.dex-robot.com/newsInfo/detail/eae8474900190f8b
+  官网「Pro 自由度展示」单帧 https://service.dex-robot.com/uploads/article/20250915/1757948099_59b79872fa920a2e0fa6.gif
+- linker-l20-bjnews-needle.webp：Linker Hand L20 实机穿针；新京报采访确认型号，画面来自央视时政；非 Lite
+  来源 https://www.bjnews.com.cn/detail/1771927388129362.html
 
 ## 随附许可文本
 
