@@ -128,6 +128,8 @@ SolidWorks 改孔请用原件，仿真或避碰请下载对应版本的原始模
   官网「Pro 自由度展示」单帧 https://service.dex-robot.com/uploads/article/20250915/1757948099_59b79872fa920a2e0fa6.gif
 - linker-l20-bjnews-needle.webp：Linker Hand L20 实机穿针；新京报采访确认型号，画面来自央视时政；非 Lite
   来源 https://www.bjnews.com.cn/detail/1771927388129362.html
+- zwhand-b20-held-demo.webp：兆威 B20 真人手持实拍，裁切后的画面；艾邦机器人网整理自兆威机电官微
+  来源 https://www.aibangbots.com/a/8055
 
 ## 随附许可文本
 
