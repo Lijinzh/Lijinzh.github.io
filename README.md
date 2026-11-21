@@ -8,7 +8,7 @@ JinZhe Li（Golden Philosophy）的个人 GitHub Pages 主页。
 - 多模态感知、机器人控制、人机 / Agent 交互与可靠 AI 工具等研究兴趣
 - 目前正在持续实验和验证的研究内容
 
-[灵巧手与可打印假手调研](https://lijinzh.github.io/dexterous-hands/) 是「正在研究」下的交互子页。列表和卡片左侧展示实拍，点「旋转查看」在右侧打开三维（手机上显示在实拍下方）。资料来源和许可随页面附上，评级仅保存在访客的浏览器。
+[灵巧手与可打印假手调研](https://lijinzh.github.io/dexterous-hands/) 是「正在研究」下的交互子页。列表和卡片左侧展示实拍，点「旋转查看」后才加载三维，在右侧打开查看器（手机上显示在实拍下方）。资料来源和许可随页面附上，评级仅保存在访客的浏览器。
 
 [无电机关节磁编码器选型](https://lijinzh.github.io/magnetic-encoders/) 在同一栏目，包含器件对比、封装图片、原厂资料入口和 I²C 采集预算工具。
 

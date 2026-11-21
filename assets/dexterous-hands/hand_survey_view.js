@@ -106,7 +106,28 @@
   const ratings = [['0','未评级'],['5','★★★★★ 首选'],['4','★★★★ 优先复核'],
     ['3','★★★ 备选'],['2','★★ 仅作结构参考'],['1','★ 暂缓'],['-1','已淘汰']];
   const storageKey = 'avatar-hand-survey-ratings-v1';
-  const assets = window.handSurveyMeshes || {};
+  // 从展示网格提取的包络（0.1 mm）和掌宽（mm）。照片浏览与尺寸比较无需下载几何。
+  const meshMeasures = {
+    shadow:[[1564,2205,447],84], dex5s:[[1240,1872,413],87], dex021:[[1915,2926,973],103],
+    wuji1:[[1899,2050,511],88], aero:[[1914,2075,545],95], sharpa:[[1771,2099,604],85],
+    linker20:[[2131,2685,767],106], wuji22:[[1779,1909,554],77], apex:[[2163,2358,591],98],
+    robotis:[[2085,2430,654],111], tesollo:[[1881,2856,1247],88], bidex:[[1241,3401,1210],0],
+    'icl-hinge':[[125,150,120],0], 'orca-v1':[[1225,3276,1083],0],
+    leap2:[[2011,2001,2128],174], rapid:[[2654,2965,1273],0]
+  };
+  const meshURL = new URL('hand_survey_meshes.js',document.currentScript.src);
+  let meshRequest=null;
+  // 首次点击才下载，同页切换时复用；失败可重新请求。
+  function loadMeshes() {
+    if (meshRequest) return meshRequest;
+    meshRequest=new Promise((resolve,reject)=>{
+      const script=document.createElement('script'); script.src=meshURL.href;
+      script.onload=()=>resolve(window.handSurveyMeshes || {});
+      script.onerror=()=>{script.remove(); reject(new Error('三维网格加载失败'));};
+      document.head.append(script);
+    }).catch(error=>{meshRequest=null; throw error;});
+    return meshRequest;
+  }
   const filterEvent = () => document.dispatchEvent(new Event('hand-survey-filter'));
 
   // 平滑光照、深度遮挡和正投影均在本页计算；无需连外部三维服务。
@@ -232,6 +253,7 @@
     const cards=all.filter(card=>card.classList.contains('cad-card'));
     const minimum=$('min-stars'), choice=$('model-choice'), facts=$('model-facts');
     const status=$('model-message'), stage=$('hand-model'), bar=$('model-bar'), legend=$('model-legend');
+    const start=$('open-model');
     const selected=()=>models.find(m=>m.key===choice.value);
     const pane=$('model-view'), dock=$('model-dock'), dockEmpty=$('dock-empty');
     let activeSlot=null;
@@ -255,7 +277,8 @@
         dock.append(pane);
       }
     }
-    $('return-model').addEventListener('click',()=>{dockTo(null); show(selected()); stage.focus();});
+    $('return-model').addEventListener('click',()=>{dockTo(null); show(selected(),true);});
+    start.addEventListener('click',()=>show(selected(),true));
     function inlineModel(card,item,record) {
       const parent=record ? card.querySelector('.detail') : card;
       // 把照片与出处整体放左侧；暂无实拍时，左侧保留说明。
@@ -276,12 +299,11 @@
       close.append(item.name,end);
       slot.append(launch,close);
       const target={slot,card,launch,close,brief,key:item.key};
-      launch.addEventListener('click',()=>{
-        choice.value=item.key; dockTo(target); show(item);
-        if (!stage.hidden) stage.focus({preventScroll:true});
-      });
+      launch.addEventListener('click',()=>{choice.value=item.key; dockTo(target); show(item,true);});
       end.addEventListener('click',()=>{dockTo(null); show(selected()); launch.focus({preventScroll:true});});
-      if (record) card.addEventListener('toggle',()=>{if (!card.open && activeSlot===target) dockTo(null);});
+      if (record) card.addEventListener('toggle',()=>{
+        if (!card.open && activeSlot===target) {dockTo(null); show(selected());}
+      });
     }
 
     function rating(key,label) {
@@ -301,9 +323,9 @@
       return wrapper;
     }
     const stamp=key=>stored[key]==='-1'?'已淘汰':'★'.repeat(Math.max(0,Number(stored[key]) || 0));
-    let render=null, unavailable=false, current=null, detailRating=null;
+    let render=null, unavailable=false, current=null, detailRating=null, revision=0;
     function factsFor(item) {
-      const mesh=assets[item.key], title=document.createElement('h3'), list=document.createElement('dl');
+      const measure=meshMeasures[item.key], title=document.createElement('h3'), list=document.createElement('dl');
       title.textContent=item.name;
       function row(k,v) {
         const dt=document.createElement('dt'),dd=document.createElement('dd');
@@ -315,11 +337,12 @@
         return d ? `（比输入${d>0?'大':'小'}约 ${Math.abs(d)} mm）` : '（与输入近似）';
       };
       row('尺寸口径',item.dims);
-      if (mesh) {
-        const [w,l,t]=mesh.dims.map(x=>Math.round(x/10));
+      if (measure) {
+        const [dimensions,palm]=measure;
+        const [w,l,t]=dimensions.map(x=>Math.round(x/10));
         const msg=item.noCompare ? `投影纵向 ${l} × 横向 ${w} × 厚 ${t} mm。`
           : `纵向约 ${l} mm${comp(l,$('ref-length'))}；含拇外宽约 ${w} mm，厚约 ${t} mm。`
-            +(mesh.palm ? `掌体包络宽约 ${mesh.palm} mm${comp(mesh.palm,$('ref-width'))}。` : '');
+            +(palm ? `掌体包络宽约 ${palm} mm${comp(palm,$('ref-width'))}。` : '');
         row(item.noCompare ? '网页模型包络' : '静态模型粗比',msg);
       }
       row('拇指／贴片',item.thumb);
@@ -342,10 +365,27 @@
       facts.replaceChildren(title,list,links,detailRating.node);
       if (activeSlot?.key===item.key) activeSlot.brief.replaceChildren(list.cloneNode(true),links.cloneNode(true));
     }
-    function show(item) {
+    async function show(item, open=false) {
       if (!item) return;
+      // 切换、收起或筛掉卡片后，不再显示上一次点击返回的几何。
+      const request=++revision;
       factsFor(item); current=item.key;
-      const mesh=assets[item.key];
+      const available=Boolean(meshMeasures[item.key]);
+      stage.hidden=bar.hidden=legend.hidden=true;
+      status.hidden=false;
+      start.hidden=!available || open;
+      start.textContent='旋转查看'+(item.scope || '整手');
+      status.textContent=available ? (open ? '正在加载三维模型…' : '') : item.reason;
+      if (!available || !open) return;
+      let mesh;
+      try {mesh=(await loadMeshes())[item.key];} catch {}
+      if (revision!==request) return;
+      if (!mesh) {
+        status.textContent='三维模型未加载成功，请重试。';
+        start.hidden=false;
+        start.textContent='重新加载三维';
+        return;
+      }
       if (mesh && !render && !unavailable) {
         try {render=viewer(stage);} catch (e) {console.warn(e);}
         unavailable=!render;
@@ -353,9 +393,12 @@
       const ready=Boolean(render && mesh);
       stage.hidden=bar.hidden=!ready; status.hidden=ready;
       legend.hidden=!ready || !mesh.parts.some(p=>p.thumb);
-      if (ready) render.load(mesh);
-      else status.textContent=unavailable && mesh ? '当前浏览器无法启用 WebGL。左侧仍可查看尺寸和下载原件。'
-        : item.reason || '未附网页网格；左侧可查看原厂文件。';
+      if (ready) {
+        render.load(mesh);
+        if (activeSlot?.slot.contains(document.activeElement) || document.activeElement===document.body) {
+          stage.focus({preventScroll:true});
+        }
+      } else status.textContent='当前浏览器无法启用 WebGL。左侧仍可查看尺寸和下载原件。';
     }
     choice.replaceChildren();
     choice.disabled=false;
@@ -365,7 +408,7 @@
       return group;
     });
     for (const m of models) {
-      const group=assets[m.key] ? (m.scope ? 1 : 0) : 2;
+      const group=meshMeasures[m.key] ? (m.scope ? 1 : 0) : 2;
       modelGroups[group].append(new Option(m.name,m.key));
     }
     $('hand-measure').hidden=false;
@@ -379,10 +422,10 @@
       const tools=document.createElement('div'); tools.className='review-row';
       tools.append(rating(card.id,name));
       const matches=models.filter(m=>m.card===card.id);
-      const inline=matches.find(item=>assets[item.key]);
+      const inline=matches.find(item=>meshMeasures[item.key]);
       if (inline) inlineModel(card,inline,record);
       for (const item of matches) {
-        if (!assets[item.key] && item.reason) {
+        if (!meshMeasures[item.key] && item.reason) {
           const note=document.createElement('small'); note.textContent=item.reason;
           note.className='model-unavailable';
           (record ? card.querySelector('.detail') : card).append(note);
@@ -415,7 +458,7 @@
     return {matches, resetFilter(){minimum.value='0';}, filterCards() {
       for (const card of cards) card.hidden=!matches(card);
       for (const group of document.querySelectorAll('.cad-group')) group.hidden=!group.querySelector('.cad-card:not([hidden])');
-      if (activeSlot && activeSlot.card.hidden) dockTo(null);
+      if (activeSlot && activeSlot.card.hidden) {dockTo(null); show(selected());}
       const n=all.filter(card=>matches(card)).length;
       $('review-numbers').textContent=`评级命中 ${n} / ${all.length} 张卡；`
         +(persistFailed?'浏览器未允许保存，本页关闭后评级会丢失。':'评级保存于当前浏览器，不改变原调研优先度。');

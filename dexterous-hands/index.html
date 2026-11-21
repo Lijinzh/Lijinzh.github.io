@@ -43,7 +43,7 @@ main{padding-bottom:65px}section{padding-top:40px}h2{margin:0 0 12px;font:800 cl
 .model-stage{position:relative;display:grid;place-items:center;min-height:350px;flex:1;background:radial-gradient(ellipse at center,#33484a,#1a2729 74%)}
 .model-stage canvas{width:100%;height:100%;position:absolute;inset:0;display:block;touch-action:none;cursor:grab}
 .model-stage canvas:active{cursor:grabbing}.model-stage canvas:focus-visible{outline:2px solid var(--orange);outline-offset:-3px}
-.model-stage p{max-width:31ch;margin:0;text-align:center;padding:12px;font-size:.88rem}
+.model-stage p{max-width:31ch;margin:0;text-align:center;padding:12px;font-size:.88rem}.model-stage p:empty{display:none}
 .model-foot{border-top:1px solid #536966;justify-content:space-between;line-height:1.5}.model-legend{color:var(--orange)}
 .model-measure,.review-filter{display:flex;gap:10px;flex-wrap:wrap;align-items:end;margin:12px 0}.model-measure label{flex:0 1 155px}
 .review-filter{padding:10px 13px;border:1px solid var(--line);background:#e8ebe0}.review-filter label{flex:0 1 192px}.review-filter p{flex:1 1 220px;margin:0;font-size:.83rem;color:var(--muted)}
@@ -100,7 +100,7 @@ main{padding-bottom:65px}section{padding-top:40px}h2{margin:0 0 12px;font:800 cl
 <ul class="facts"><li><strong>18</strong>厂商型号或项目</li><li><strong>20</strong>国内校所／课题组线索</li><li><strong>8</strong>假手和自制路线</li></ul>
 </div>
 </header>
-<main class="wrap" id="main"><p class="public-scope">列表封面和展开后的左侧只展示实物照片或真实演示画面。打开条目后，点「旋转查看」在右侧查看三维；手机上在照片下方。未核实的照片不设图框。评级保存在当前浏览器。</p>
+<main class="wrap" id="main"><p class="public-scope">列表封面和展开后的左侧只展示实物照片或实机演示画面。有在线模型的条目，点「旋转查看」才加载三维，显示在右侧；手机上显示在照片下方。未核实的照片不设图框。评级保存在当前浏览器。</p>
 <section id="shortlist">
 <span class="number">01 / START HERE</span><h2>第一轮先找这几家</h2>
 <div class="pick-grid">
@@ -136,7 +136,8 @@ main{padding-bottom:65px}section{padding-top:40px}h2{margin:0 0 12px;font:800 cl
 </div>
 <div class="model-stage">
 <canvas aria-label="三维模型；拖动或按方向键旋转，滚轮缩放" hidden="" id="hand-model" tabindex="0"></canvas>
-<p id="model-message" role="status">加载三维几何…</p>
+<p id="model-message" role="status">正在准备三维查看器…</p>
+<button hidden="" id="open-model" type="button">旋转查看整手</button>
 </div>
 <div class="model-foot"><span>拖动或方向键旋转 · 滚轮缩放</span><span class="model-legend" hidden="" id="model-legend">橙色为拇指活动件</span></div>
 </div>
@@ -497,8 +498,7 @@ main{padding-bottom:65px}section{padding-top:40px}h2{margin:0 0 12px;font:800 cl
 </section>
 </main>
 <footer class="footer"><div class="wrap">Made by Golden Philosophy · AvatarSystem · 调研快照：2026-11-20 · 条目来源见各展开卡片。<a href="#top">返回顶部 ↑</a></div></footer>
-<script src="../assets/dexterous-hands/hand_survey_meshes.js"></script>
-<script src="../assets/dexterous-hands/hand_survey_view.js?v=20261121-photos"></script>
+<script src="../assets/dexterous-hands/hand_survey_view.js?v=20261121-photos-on-demand"></script>
 <script>
 (() => {
   const records = [...document.querySelectorAll('.record')];
