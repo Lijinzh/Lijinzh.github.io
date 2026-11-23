@@ -66,16 +66,49 @@ figcaption{color:var(--muted);font-size:.83em;line-height:1.5}.assembly{margin:1
 </head>
 <body>
 <header class="hero"><div>
-<p class="eyebrow">GOLDEN PHILOSOPHY · 关节角参考 · 更新 2026-11-21</p>
+<p class="eyebrow">GOLDEN PHILOSOPHY · 关节角参考 · 更新 2026-11-24</p>
 <h1>无电机关节磁编码器选型</h1>
 <p>径向磁化磁铁、五指各一条 I²C 支路、每指四个绝对角节点（共 20 个，另留扩展）。目标是每关节至少 120 个有效新样本/秒，并用独立角度基准验证误差。</p>
-<nav aria-label="报告目录"><a href="../#now">← 返回主页</a><a href="#decision">推荐顺序</a><a href="#packages">封装图片</a><a href="#procurement">立创与贴装</a><a href="#range">180° 量程</a><a href="#mixed">混挂第五颗</a><a href="#timing">速率预算</a><a href="#arduino">六路小主控</a><a href="#flash">烧录</a><a href="#usb-cdc">USB‑C / CDC</a><a href="#board">板与径向磁铁</a><a href="#magnetic">三轴精度与串扰</a><a href="#dedicated">所有规格</a><a href="#sources">PDF 档案</a><a href="#todo">后续待办</a></nav></div></header>
+<nav aria-label="报告目录"><a href="../#now">← 返回主页</a><a href="#reader-board">读取板 A0 原理图</a><a href="#decision">推荐顺序</a><a href="#packages">封装图片</a><a href="#procurement">立创与贴装</a><a href="#range">180° 量程</a><a href="#mixed">混挂第五颗</a><a href="#esp32-expansion">扩展器对比</a><a href="#timing">速率预算</a><a href="#arduino">六路小主控</a><a href="#flash">烧录</a><a href="#usb-cdc">USB‑C / CDC</a><a href="#board">板与径向磁铁</a><a href="#magnetic">三轴精度与串扰</a><a href="#dedicated">所有规格</a><a href="#sources">PDF 档案</a><a href="#todo">后续待办</a></nav></div></header>
 <main>
-<section id="decision"><h2>先试 AS5048B，再用 TMAG3001 验证小封装</h2>
+<section id="reader-board">
+<h2>当前方案 · 无电机关节编码器读取板 A0</h2>
+<div class="note"><p><b>ESP32‑PICO‑V3 + 两颗 TCA9546APWR + AS5048B-HTSP-500。</b>五指各一条 I²C 支路，共 20 轴；第六路给掌部或扩展，满配为 24 轴。400 kHz 双总线并行；首板目标 150 帧/s，验收至少 120 个有效整手帧/s。<a href="./encoder_reader_schematic.pdf">打开六页原理图</a> · <a href="./encoder_reader_connections.csv" download>下载逐焊盘接线表</a></p></div>
 <div class="grid">
-<div class="card"><span class="tag">01 · 专用角度首选</span><b>AS5048B</b><p>14 bit，0.02197°/码；两根地址脚直接选四档。用四颗做一根手指的基准方案。</p></div>
-<div class="card"><span class="tag">02 · 最小封装首选</span><b>TMAG3001A1</b><p>0.83 × 1.32 mm，单脚选四档。三轴芯片能输出 XY 角度，有条件明确的误差上限。</p></div>
-<div class="card"><span class="tag">单主控 · 六路 I²C</span><b>STM32U595 · 7 × 7 mm</b><p>UFBGA132 六路 Arduino 草图编译通过。五指各一路，留第六路；掌板用 Type‑C 做 DFU 与 CDC，外置夹具负责免按键烧录。极限体积见 WLCSP150。</p></div>
+<article class="card"><span class="tag">总线 A · Wire</span><b>GPIO21 SDA / GPIO22 SCL</b><p>U39 @ 0x70 → J1 拇指、J2 食指、J3 中指。BMP581 @ 0x46 接开关上游；GPIO20 独立复位 U39。</p></article>
+<article class="card"><span class="tag">总线 B · Wire1</span><b>GPIO26 SDA / GPIO27 SCL</b><p>U40 @ 0x70 → J4 无名指、J5 小指、J6 掌部。GPIO10 独立复位 U40。两颗开关各留第 4 通道为 J7/J8，默认不装；扩到 32 颗前重新核算稳压和线束载流。</p></article>
+<article class="card"><span class="tag">旧表接口</span><b>CN1 · 外部供电和 UART0</b><p>1 = 5 V 输入；2 = BOOT；3 = EN；4 = 板 RX；5 = 板 TX；6 = GND。串口逻辑 3.3 V，外部转接器负责 USB 和 DTR/RTS 自动下载。</p></article>
+</div>
+<h3>照旧板保留什么、换什么</h3>
+<ul>
+<li><b>电源：</b>保留单节 4.2 V 锂电池、BQ25185、开关、TPS631010 和两颗 RT9013。CN1 触点接外部 5 V，保留充电；板上走原外部接口。原 3.6 V 轨供外置 IMU，两颗 LDO 分别供 3.3 V 逻辑和 3.3 V 编码器。24 颗编码器按 15 mA/颗上限预算 <b>360 mA</b>；满载启动与线末压降列入验收。BQ25185 原设置 4.20 V、1.1 A 输入限流档、典型 484 mA 充电电流，按所用电芯额定调整 ISET；外部电源采用 5 V / ≥1.5 A，并核对触点额定电流。边充边用时，电源路径优先供系统。</li>
+<li><b>旧外设：</b>保留 ST7789、背光、按键、BMP581 和外置 RS‑485 IMU 接头。PCB3 网表 U3 标为 PICO‑D4，D4 的 35/36 焊盘在 V3 是 NC；本图将屏幕 SCK/MOSI 移到 <b>GPIO19 / GPIO13</b>，保留 CS GPIO5、D/C GPIO25 和背光 GPIO4。省去液态金属采样前端，电池监测改 GPIO34（ADC1，1 MΩ / 1 MΩ + 1 µF）。</li>
+<li><b>选路：</b>两颗开关并列，各接自己的一条硬件 I²C。每颗同时只选一路，写 <code>0x01/0x02/0x04</code> 后发 STOP。每条线均为 <code>1:3V3_ENC · 2:GND · 3:SDA · 4:SCL</code>。一条支路内约定四颗地址 <code>0x40–0x43</code>；A2/A1 用 0 Ω 固定到电源或地。</li>
+<li><b>上拉：</b>掌板两条上游各用 <b>4.7 kΩ ×2</b>，每条支路先用 <b>2.2 kΩ ×2</b>；选通时低电平灌流近似按 1.50 kΩ 算。四颗 AS5048B 的输入电容规格上限合计 40 pF/线，再加开关、PCB 和线束。长线通常增加电容，调低上拉可加快上升沿；沿最远端实测 <b>30%→70% ≤120 ns</b> 和低电平，必要时试下游 1.5 kΩ。1.50 kΩ 与 120 ns 的单段 RC 粗估对应约 94 pF，开关两侧各有电容，实际以波形为准。</li>
+</ul>
+<h3>刷新率与串口带宽</h3>
+<div class="scroll" tabindex="0" role="region" aria-label="读取板速率预算"><table style="min-width:590px"><thead><tr><th>模式</th><th>最忙控制器的计算</th><th>纯总线时间 / 理论上限</th></tr></thead><tbody>
+<tr><td>20 或 24 角；每颗读 2 B</td><td><code>3 × (18 + 4 × 45) / 400000</code></td><td><b>1.485 ms / 约 673 帧/s</b></td></tr>
+<tr><td>24 角，含每颗诊断、磁幅值</td><td><code>3 × (18 + 4 × 72) / 400000</code>，读 0xFB–0xFF</td><td>2.295 ms / 约 436 帧/s</td></tr>
+<tr><td>24 角；两控制器串行对照</td><td><code>2 × 594 / 400000</code></td><td>2.970 ms / 约 337 帧/s</td></tr>
+<tr><td>24 角；100 kHz 并行调试</td><td><code>594 / 100000</code></td><td>5.940 ms / 约 168 帧/s</td></tr>
+</tbody></table></div>
+<p>每条支路内四颗依次读，两条控制器的任务并行启动，同一帧序号汇合结果。选路占 18 个 SCL 周期，两字节随机读占 45 个；纯时钟预算之外留出 START/STOP、总线空闲、BMP581 调度、错误恢复和发包时间。把 BMP581 读放在 A 路帧边界，避免一个任务切换另一个任务正在访问的开关。I²C 独立看门狗超时后拉低该路 RESET，再跳过故障支路。整手各轴按各自读出时间记时。</p>
+<p>UART0 建议 <b>921600 baud、8N1</b>；外置串口桥和线束按该波特率验收。63 B 定长帧示例：2 B 帧头、1 B 版本、1 B 长度、2 B 帧序号、4 B 时间戳、3 B 有效位图、48 B 角度、2 B CRC。150 Hz 约 94.5 kbit/s，500 Hz 约 315 kbit/s；记录开始时可用帧头过滤启动日志。角度占两个字节，保留完整 14 位。</p>
+<h3>关节端和已讨论的取舍</h3>
+<div class="grid">
+<article class="card"><b>AS5048B · 地址与角度</b><p>3.3 V 时 11/12 脚并接，每颗放 100 nF + 10 µF。A2/A1 的 00/01/10/11 对应 0x40/41/42/43，默认 OTP 下用焊位设址。连读 0xFE/0xFF，<code>raw=(high&lt;&lt;6)|(low&amp;0x3F)</code>。</p></article>
+<article class="card"><b>分辨率、精度与半圈</b><p>14 位对应 0.02197°/码，传感器内部典型 11.25 kHz、延迟 100 µs。5 V 原厂表给出理想对中 25°C INL 最大 ±0.8°、噪声 0.06° RMS 典型。机械量程 180° 使用约 8192 码，保持原每码角度；3.3 V 装机精度用角度基准测。</p></article>
+<article class="card"><b>磁铁、方向与串扰</b><p>首件 Ø6 × 3 mm 直径充磁磁铁，磁铁端面到封装顶面先用 1.5 mm，原厂典型范围 0.5–2.5 mm；轴心偏移按 ≤0.25 mm。装配后固定被测轴扫相邻关节，记录峰峰漂移；<a href="./as5048b_zh.pdf">中文设计手册</a> · <a href="./as5048b_3v3_schematic.pdf">单节点原理图</a>。</p></article>
+</div>
+<p class="small">专题索引：<a href="#procurement">立创采购 / SMT</a> · <a href="#mixed">同线第五颗</a> · <a href="#magnetic">三轴方案与磁串扰</a> · <a href="#arduino">STM32 六路备选</a> · <a href="#flash">免按键烧录参考</a> · <a href="#usb-cdc">USB CDC 备选</a>。</p>
+<p class="small">设计依据：<a href="https://documentation.espressif.com/esp32-pico_series_datasheet_en.pdf#page=17">PICO‑V3 焊盘</a> · <a href="https://www.ti.com/lit/ds/symlink/tca9546a.pdf#page=3">TCA9546A 引脚</a> · <a href="https://www.infineon.cn/assets/row/public/documents/30/49/infineon-as5048a-as5048b-datasheet-en.pdf#page=24">AS5048B 400 kHz 时序</a> · <a href="https://www.ti.com/lit/ds/symlink/bq25185.pdf">BQ25185</a> · <a href="https://www.ti.com/lit/ds/symlink/tps631010.pdf">TPS631010</a> · <a href="https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bmp581-ds004.pdf">BMP581</a>。旧版复用依据为 2026‑10‑23 PCB3 网表。</p>
+</section>
+<section id="decision"><h2>主方案已确定：AS5048B 与 ESP32‑PICO‑V3</h2>
+<div class="grid">
+<div class="card"><span class="tag">01 · 专用角度首选</span><b>AS5048B</b><p>14 bit，0.02197°/码；两根地址脚直接选四档。首板每指最多四颗。</p></div>
+<div class="card"><span class="tag">三轴小封装备选</span><b>TMAG3001A1</b><p>0.83 × 1.32 mm，单脚选四档。三轴芯片能输出 XY 角度，有条件明确的误差上限。</p></div>
+<div class="card"><span class="tag">当前掌板</span><b>ESP32‑PICO‑V3 + 双 TCA9546A</b><p>两条硬件 I²C 分成 3+3 支路，共接 24 颗 AS5048B；400 kHz 下整手纯线时上限约 673 帧/s。<a href="#reader-board">原理图及接线表</a>。</p></div>
 </div>
 <div class="note"><p>首板建议 <b>400 kHz</b>、每关节目标采集 150 Hz，验收 ≥120 Hz 有效新样本。<b>14 bit 是输出刻度，精度看角误差上限及整机关节实测。</b>如按装机最大误差 ≤0.5° 验收，使用独立角度基准测整机关节。</p></div>
 <div class="scroll" tabindex="0"><table class="rank"><thead><tr><th>推荐顺序 / 具体型号</th><th>封装标称本体（mm）</th><th>分辨率 / 原厂角误差</th><th>原生 I²C / 地址设置</th><th>角更新 / 选择理由</th></tr></thead><tbody>
@@ -168,20 +201,50 @@ figcaption{color:var(--muted);font-size:.83em;line-height:1.5}.assembly{margin:1
 <p class="small">两路或五路的下界假设主控真正并行发起事务；阻塞式交替调用仍要把事务时间相加。1 MHz 列为同一事务位数的理论对比，只用于 MCU、传感器和开关都正式支持该速度的组合。表中不计 START/STOP/Sr 及总线空闲各自的时序、RC、拉伸 SCL、延迟、读状态与重试、主控调度、测量完成相位或向上游传输。120 Hz 周期为 8.333 ms；以 150 Hz/6.667 ms 做首轮测试留余量。1 路方案 100 kHz 时，即便仅 45 clocks/节点也要 9.90 ms。</p>
 <div class="calc"><h3 style="margin-top:0">按实际读法重算</h3>
 <div class="controls">
-<label>支路数 <input id="fingers" type="number" min="1" max="32" value="5"></label>
+<label>支路数 <input id="fingers" type="number" min="1" max="32" value="6"></label>
 <label>每支路节点 <input id="nodes" type="number" min="1" max="32" value="4"></label>
-<label>总线拓扑 <select id="topo"><option value="2">2 个控制器＋开关</option><option value="1">1 个控制器＋开关</option><option value="native" selected>每路原生控制器</option></select></label>
-<label>节点读法 <select id="clocks"><option value="45">45 clocks（角度 2 B）</option><option value="54">54 clocks（状态＋角度）</option><option value="63">63 clocks（状态＋角度＋CRC）</option><option value="72">72 clocks（两次读等）</option></select></label>
-<label><span>每支路最后一颗</span><select id="extra"><option value="same">同上</option><option value="45">45 clocks</option><option value="54">54 clocks</option><option value="63">63 clocks</option><option value="72">72 clocks</option></select></label>
+<label>总线拓扑 <select id="topo"><option value="2" selected>2 个控制器＋I²C 开关</option><option value="1">1 个控制器＋I²C 开关</option><option value="gpio">2 个控制器＋GPIO 开关</option><option value="native">每路原生控制器</option></select></label>
+<label>节点读法 <select id="clocks"><option value="45">45 clocks（角度 2 B）</option><option value="54">54 clocks（通用连续 3 B）</option><option value="63">63 clocks（状态＋角度＋CRC）</option><option value="72">72 clocks（AS5048B 诊断＋角度 5 B）</option><option value="81">81 clocks（AS5048B 诊断＋角度 6 B）</option></select></label>
+<label><span>每支路最后一颗</span><select id="extra"><option value="same">同上</option><option value="45">45 clocks</option><option value="54">54 clocks</option><option value="63">63 clocks</option><option value="72">72 clocks</option><option value="81">81 clocks</option></select></label>
 <label>SCL <select id="khz"><option value="100">100 kHz</option><option value="375">375 kHz</option><option value="400" selected>400 kHz</option><option value="1000">1 MHz</option></select></label>
-<label>目标 Hz <input id="hz" type="number" min="1" max="2000" value="120"></label>
+<label>目标 Hz <input id="hz" type="number" min="1" max="2000" value="150"></label>
 </div>
-<div id="calc-result" class="calcout" role="status">默认：最忙支路 180 clocks，0.450 ms，5.4% 占用。</div></div>
+<div id="calc-result" class="calcout" role="status">默认：24 节点，最忙总线 594 clocks，1.485 ms，673.4 Hz 理论上限，150 Hz 时占用 22.3%。</div></div>
 <h3>布线与故障恢复检查</h3>
 <p>手指线尽量短、走地回流，每支路预留独立上拉与测试点。在装好最长线束和全部节点后，用示波器测 SDA/SCL 上升沿（400 kHz 时 <strong>≤300 ns</strong>，Fm+ 时 <strong>≤120 ns</strong>）。例如 100 pF 时，<code>R<sub>p,max</sub>≈t<sub>r</sub>/(0.8473 C<sub>b</sub>)</code> 给出约 3.54 kΩ/1.42 kΩ，器件若更严则按件规，例如 400 kHz 的 AS5048B / AS5601 仍应做到 ≤120 ns。再按最弱器件的灌流与 VOL 算下限，测开关两侧并联后的实际阻值。复用相同地址组时，每个控制器同时选通一条支路；短路恢复应能用独立 RESET 或分支隔离。<span class="evidence"><a href="https://www.nxp.com/docs/en/user-guide/UM10204.pdf#page=44" title="nxp_UM10204_Rev7.0.pdf · PDF p.44">p.44</a> <a href="https://www.nxp.com/docs/en/user-guide/UM10204.pdf#page=50" title="nxp_UM10204_Rev7.0.pdf · PDF p.50">p.50</a> <a href="https://www.ti.com/lit/ds/symlink/tca9548a.pdf#page=14" title="ti_TCA9548A.pdf · PDF p.14">p.14</a></span></p>
 </section>
-<section id="arduino"><h2>STM32U595 / U599：六路 I²C 的小封装</h2>
-<div class="note"><p><b>首版掌板选 STM32U595QII6Q（UFBGA132，7 × 7 mm，球距 0.50 mm）。</b>五指各走一路，第六路留给掌部或腕部；PA11/PA12 留给原生 USB，PA2/PA3 留给串口恢复，PA13/PA14 留给 SWD。体积优先时选同系列 STM32U595ZIY6QTR（WLCSP150），并让板厂先核对 0.40 mm 球距的扇出和贴装。</p></div>
+<section id="esp32-expansion"><h2>ESP32 扩展器对比与时序计算</h2>
+<div class="note"><p><b>A0 采用两颗 TCA9546A；4 × 4 mm 的 TCA9548A 是小封装替代。</b>ESP32 的两条硬件 I²C 各管三条支路，每条放四颗 AS5048B。六组地址均为 <code>0x40–0x43</code>，用地址脚设定。扩展器放在掌板，进入每条支路的线为 VDD、GND、SDA、SCL。单颗 TCA9548A 也能接齐六组，适合先用最少器件验证 120 Hz。</p></div>
+<div class="grid">
+<div class="card"><span class="tag">硬件控制器 0</span><b><code>Wire</code> → 开关 A → 支路 1 / 2 / 3</b><p>每次选中一条，读完四颗后切到下一条。</p></div>
+<div class="card"><span class="tag">硬件控制器 1</span><b><code>Wire1</code> → 开关 B → 支路 4 / 5 / 6</b><p>独立任务并行读，主任务按帧序号汇合 24 个角度。</p></div>
+</div>
+<p>ESP32‑PICO 系列手册列出两个 I²C 控制器，硬件描述另列“最高 5 MHz，受上拉约束”。本设计按 ESP-IDF 给出的主机 <b>400 kHz</b> 工作频率计算。AS5048B 的 Fast 档为 400 kHz，另有标准 Hs 档：100 pF 时最高 3.4 MHz，400 pF 时最高 1.7 MHz。这里采用标准 Fast 事务；1 MHz Fm+ 开关本身的额定值作为换传感器后的扩展余量。<span class="evidence"><a href="https://documentation.espressif.com/esp32-pico_series_datasheet_en.pdf#page=28">PICO I²C p.28–29</a> <a href="https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/peripherals/i2c.html">ESP-IDF I²C</a> <a href="https://docs.espressif.com/projects/arduino-esp32/en/latest/api/i2c.html">Arduino-ESP32 I²C</a> <a href="https://www.infineon.cn/assets/row/public/documents/30/49/infineon-as5048a-as5048b-datasheet-en.pdf#page=23">AS5048B 接口 p.23–25</a></span></p>
+
+<h3>24 角一帧：扩展方案排名与速率</h3>
+<div class="scroll" tabindex="0" role="region" aria-label="ESP32 扩展器及整手刷新率对照"><table class="rank">
+<thead><tr><th scope="col">选择顺序与型号</th><th scope="col">额定值 / 芯片本体</th><th scope="col">整手帧纯时钟预算</th><th scope="col">选型理由与原厂页码</th></tr></thead><tbody>
+<tr><td><b>1 · 双 I²C 开关</b><small>两颗 TCA9546A 或 TCA9548A，3+3</small></td><td>开关 400 kHz。TCA9546APWR：TSSOP16，5.0 × 4.4 mm；TCA9548ARGER / AMRGER：VQFN24，4.0 × 4.0 mm。</td><td><b>1.485 ms · 673 Hz</b><br>每路 594 clocks，另一路同时读。</td><td>首版首选；掌板可单独 RESET 两颗开关，故障时断开支路。TSSOP 方便手焊，VQFN 省面积。<span class="evidence"><a href="https://www.ti.com/lit/ds/symlink/tca9546a.pdf#page=1">9546A 封装</a> <a href="https://www.ti.com/lit/ds/symlink/tca9546a.pdf#page=14">9546A 选路</a> <a href="https://www.ti.com/lit/ds/symlink/tca9548a.pdf#page=1">9548A 封装</a> <a href="https://www.ti.com/lit/ds/symlink/tca9548a.pdf#page=17">9548A 选路</a></span></td></tr>
+<tr><td><b>2 · 双 GPIO 模拟开关</b><small>两颗 TMUX1209RSVR 或 TMUX1109，3+3</small></td><td>双路 4:1，同时切 SDA/SCL。QFN16，2.60 × 1.80 mm；3.3 V 下切换最大 25 ns（原厂测试条件）。I²C 仍按 400 kHz。</td><td><b>1.350 ms · 741 Hz</b><br>每路 540 clocks；GPIO 切换另计。</td><td>这里比较的免编程开关里最快，比首选每帧省 0.135 ms。GPIO 直接选路，EN 拉低可断开全部支路。TMUX1209 导通共端电容 42 pF typ。TMUX1109PWR 是有脚替代，3.3 V 下共端导通电容 38 pF typ、导通电阻 4 Ω typ / 9.75 Ω 全温 max，切换 ≤23 ns（原厂测试条件）；同为 741 Hz 的时钟预算。TMUX1309 同为双路 4:1；3.3 V 下导通共端 11 pF typ / 40 pF max，导通电阻 120 Ω typ / 370 Ω 全温 max，EN 为低有效；这三款均需实测边沿和低电平。<span class="evidence"><a href="https://www.ti.com/lit/ds/symlink/tmux1209.pdf#page=1">1209 封装</a> <a href="https://www.ti.com/lit/ds/symlink/tmux1209.pdf#page=9">1209 时序与电容</a> <a href="https://www.ti.com/lit/ds/symlink/tmux1209.pdf#page=21">选路真值表</a> <a href="https://www.ti.com/lit/ds/symlink/tmux1109.pdf#page=7">1109 电气参数 p.7–8</a> <a href="https://www.ti.com/lit/ds/symlink/tmux1309.pdf#page=9">1309 电气参数</a></span></td></tr>
+<tr><td><b>3 · 单颗八路 I²C 开关</b><small>一颗 TCA9548A，单控制器带 6 路</small></td><td>400 kHz；选六路，保留两个口。</td><td><b>2.970 ms · 337 Hz</b><br>共 1,188 clocks。</td><td>最省硬件、调度最简单；120 Hz 占纯时钟预算约 35.6%。第 2 条原生 I²C 可留给其他设备。<span class="evidence"><a href="https://www.ti.com/lit/ds/symlink/tca9548a.pdf#page=17">9548A 选路</a></span></td></tr>
+<tr><td><b>4 · 双 1 MHz I²C 开关</b><small>TI TCA9846 / 9848；NXP PCA9846 / 9848</small></td><td>额定 1 MHz Fm+；TCA9846 WQFN16 和 TCA9848 VQFN24 均有 4.0 × 4.0 mm 封装。</td><td><b>1.485 ms · 673 Hz</b><br>ESP32 + AS5048B 组合按 400 kHz。</td><td>适合为其他 Fm+ 传感器预留。按对应料号和封装重新核对地址脚、电源及封装焊盘。<span class="evidence"><a href="https://www.ti.com/lit/ds/symlink/tca9846.pdf#page=1">TCA9846</a> <a href="https://www.ti.com/lit/ds/symlink/tca9848.pdf#page=1">TCA9848</a> <a href="https://www.nxp.com/docs/en/data-sheet/PCA9846.pdf#page=2">PCA9846</a> <a href="https://www.nxp.com/docs/en/data-sheet/PCA9848.pdf#page=1">PCA9848</a></span></td></tr>
+<tr><td><b>5 · 地址翻译</b><small>两颗 LTC4317，每控制器一颗</small></td><td>400 kHz；每颗两路地址翻译，另在上游直接接一组。</td><td><b>1.350 ms · 741 Hz</b><br>各控制器连续读 12 颗。</td><td>每条上游可按三组地址访问：直连组 <code>0x40–0x43</code>，两条翻译支路用 7 位 XOR <code>0x08</code> / <code>0x10</code> 映射到 <code>0x48–0x4B</code> / <code>0x50–0x53</code>，保留 BMP581 的 <code>0x46</code>。省选路命令，多条支路持续在线；按翻译器分段核对上拉与故障行为。<span class="evidence"><a href="https://www.analog.com/media/en/technical-documentation/data-sheets/4317fa.pdf#page=1">LTC4317 概述</a> <a href="https://www.analog.com/media/en/technical-documentation/data-sheets/4317fa.pdf#page=8">地址翻译</a></span></td></tr>
+<tr><td><b>6 · SPI 转 I²C 桥</b><small>NXP SC18IS604，每颗一个 I²C 控制器</small></td><td>上游 SPI Mode 3，≤1.2 MHz；下游最高可设 375 kHz。掌内布 SPI，支路仍为 I²C 四线。</td><td><b>单桥 + 开关：</b>I²C 线时 3.168 ms；逐笔执行、检查状态的模型约 8.4 ms（约 119 Hz）。<br><b>六桥并行排程：</b>SPI 模型约占 3.65 ms（单 SPI）或 1.82 ms（双 SPI，三颗一组）。</td><td>每点用 6 B 命令、3 B 状态、3 B 回读。模型按字节间约 8 µs 高电平预算、命令后至少 35 µs 进入 I²C；六桥可把各自的下游等待与其他片的 SPI 操作重叠。六桥数字只计算 SPI 占用。新板优先两条原生 I²C 带开关。<span class="evidence"><a href="https://www.nxp.com/docs/en/data-sheet/SC18IS604.pdf#page=6">I²C 分频</a> <a href="https://www.nxp.com/docs/en/data-sheet/SC18IS604.pdf#page=10">命令</a> <a href="https://www.nxp.com/docs/en/data-sheet/SC18IS604.pdf#page=16">SPI 时序</a></span></td></tr>
+<tr><td><b>对照 · 真六路并行</b><small>PCA9663 或掌侧 RP2350 采集桥</small></td><td>PCA9663 一颗有三路，8 位并口上游；RP2350 用硬件 I²C + PIO，自写采集桥。</td><td><b>0.450 ms · 2,222 Hz</b><br>六路各跑 400 kHz 的下游线时上限。</td><td>适合以后追求千赫兹级时比较。整手数据还要经桥端组帧和上行；掌板电路与开发量更大。<span class="evidence"><a href="https://www.nxp.com/docs/en/data-sheet/PCA9663.pdf#page=1">PCA9663 并口</a> <a href="https://datasheets.raspberrypi.com/rp2350/rp2350-datasheet.pdf#page=792">RP2350 PIO</a> <a href="https://datasheets.raspberrypi.com/rp2350/rp2350-datasheet.pdf#page=842">RP2350 I²C</a></span></td></tr>
+</tbody></table></div>
+
+<p class="small">采购核对：TI TCA9546APWR（<a href="https://www.lcsc.com/product-detail/C201653.html">立创 C201653</a> / <a href="https://jlcpcb.com/partdetail/TexasInstruments-TCA9546APWR/C201653">嘉立创贴装目录</a>）、TCA9548APWR（<a href="https://www.lcsc.com/product-detail/C130026.html">立创 C130026</a> / <a href="https://jlcpcb.com/partdetail/TexasInstruments-TCA9548APWR/C130026">贴装目录</a>）、TMUX1109PWR（<a href="https://www.lcsc.com/product-detail/C2673338.html">立创 C2673338</a> / <a href="https://jlcpcb.com/partdetail/TexasInstruments-TMUX1109PWR/C2673338">贴装目录</a>）。这些链接对应有脚版本；下单按选用封装的料号核对库存及贴装。</p>
+
+<h3>怎么计算、怎么读</h3>
+<p>角度读法是 <code>写地址 → 0xFE → repeated START → 读地址 → 高字节 + ACK → 低字节 + NACK → STOP</code>。写地址、寄存器、读地址和两个数据字节各占 9 个 SCL 周期，共 <b>45 clocks</b>（含 ACK/NACK）。I²C 开关每换一条支路写地址和掩码，再发 STOP，共 <b>18 clocks</b>。每帧按较慢的控制器计算：<code>3 × (18 + 4 × 45) / 400000 = 1.485 ms</code>。AS5048B 的传感器内部输出典型为 <b>11.25 kHz</b>、典型传播延迟 <b>100 µs</b>。整手刷新率用完成 24 个角度的帧数计算，实际帧周期还要为 START/STOP、空闲时间、GPIO 切换、固件调度、重试和上行留时间。<span class="evidence"><a href="https://www.infineon.cn/assets/row/public/documents/30/49/infineon-as5048a-as5048b-datasheet-en.pdf#page=10">磁角指标 p.10</a> <a href="https://www.infineon.cn/assets/row/public/documents/30/49/infineon-as5048a-as5048b-datasheet-en.pdf#page=23">连续读 p.23</a> <a href="https://www.infineon.cn/assets/row/public/documents/30/49/infineon-as5048a-as5048b-datasheet-en.pdf#page=27">寄存器 p.27</a> <a href="https://www.infineon.cn/assets/row/public/documents/30/49/infineon-as5048a-as5048b-datasheet-en.pdf#page=28">地址与总线图 p.28</a></span></p>
+<p>双开关方案在 <b>150 / 400 / 500 Hz</b> 时，纯总线分别占周期的 <b>22.3% / 59.4% / 74.3%</b>。若每颗每帧从 <code>0xFA</code> 连读到 <code>0xFF</code>，取 AGC、诊断、幅值和角度六字节，每颗 81 clocks，同样拓扑为 <b>2.565 ms / 390 Hz</b> 理论上限。常态每帧只读角度，低频错开读取诊断。原厂说明 COF 触发时角度保留上一次有效值。若每帧需要随角度读取 COF，可由 <code>0xFB</code> 连读五字节，纯线时为 <b>2.295 ms / 436 Hz</b>；需要同时获取 AGC 时再用六字节。<span class="evidence"><a href="https://www.infineon.cn/assets/row/public/documents/30/49/infineon-as5048a-as5048b-datasheet-en.pdf#page=31">COF 行为</a></span>两组交由独立任务各自完成，帧中保存读数时间；这样能在手指快速运动时计算首末轴时间差。<span class="evidence"><a href="https://www.infineon.cn/assets/row/public/documents/30/49/infineon-as5048a-as5048b-datasheet-en.pdf#page=27">诊断字段与角寄存器</a></span></p>
+
+<h3>掌板和上行</h3>
+<p>每条支路及两条上游分别预留上拉和测点，按 AS5048B 手册的 <b>120 ns</b> 上升沿上限检查。四颗传感器的输入电容规格上限合计每线 40 pF，再计开关、电路板及柔性线；同时测两端低电平和灌电流。现有 Watch 的 SiP 记录为 PICO‑D4，GPIO21/22 已接 BMP581，若将其放在开关上游，按相同总线预算安排低频读取。PICO‑V3 把 PICO‑D4 原来引出 GPIO18/23 的焊盘标为 NC，掌板按实物 SiP 丝印和原厂焊盘表重新分配。Espressif 将 PICO‑V3 标为 NRND，已有料可用于首板。<span class="evidence"><a href="https://www.infineon.cn/assets/row/public/documents/30/49/infineon-as5048a-as5048b-datasheet-en.pdf#page=23">输入电容</a> <a href="https://www.infineon.cn/assets/row/public/documents/30/49/infineon-as5048a-as5048b-datasheet-en.pdf#page=24">Fast 上升沿</a> <a href="https://documentation.espressif.com/esp32-pico_series_datasheet_en.pdf#page=1">PICO‑V3 生命周期</a> <a href="https://documentation.espressif.com/esp32-pico_series_datasheet_en.pdf#page=22">PICO 焊盘差异</a> <code>include/pin_config.h</code></span></p>
+<p>上行沿用 USB 转串口即可。以每帧 60 B（48 B 角度 + 12 B 帧头、序号、时间戳与校验）为例，8N1 下 150 Hz 约占 90 kbit/s，500 Hz 约占 300 kbit/s。<a href="#reader-board">现行 A0 帧格式与串口速率</a>见读取板章节。</p>
+</section>
+<section id="arduino"><h2>备选：STM32U595 / U599 六路原生 I²C</h2>
+<div class="note"><p><b>六路原生 I²C 备选为 STM32U595QII6Q（UFBGA132，7 × 7 mm，球距 0.50 mm）。</b>五指各走一路，第六路留给掌部或腕部；PA11/PA12 留给原生 USB，PA2/PA3 留给串口恢复，PA13/PA14 留给 SWD。体积优先时选同系列 STM32U595ZIY6QTR（WLCSP150），并让板厂先核对 0.40 mm 球距的扇出和贴装。</p></div>
 <div class="scroll" tabindex="0"><table class="rank"><thead><tr><th>料号或系列</th><th>封装本体 / 间距（mm）</th><th>同时可引出的 I²C</th><th>Arduino 与 USB</th></tr></thead><tbody>
 <tr><td><b>STM32U595QII6Q</b></td><td>UFBGA132 · 7 × 7 / 0.50</td><td>6 路；按下表引脚分配</td><td>STM32duino 3.1.0 补充板型和链接脚本后，六路草图编译通过。片上 USB 2.0 HS PHY。</td></tr>
 <tr><td><b>STM32U595ZIY6QTR</b><br>STM32U599ZJY6QTR 同档尺寸</td><td>WLCSP150 · 5.38 × 5.47 / 0.40</td><td>6 路，使用下表的六对 GPIO。球位按型号选择：<a href="https://www.st.com.cn/resource/en/datasheet/stm32u595zi.pdf#page=104">U595</a> / <a href="https://www.st.com.cn/resource/en/datasheet/stm32u595zi.pdf#page=105">U599</a></td><td>U595ZIY6QTR 的六路草图编译通过。两款均为片上 USB 2.0 HS PHY。</td></tr>
@@ -255,7 +318,7 @@ figcaption{color:var(--muted);font-size:.83em;line-height:1.5}.assembly{margin:1
 <details class="archive"><summary>展开其他 MCU 与总线扩展器</summary><section id="mcu"><h2>MCU 和总线扩展</h2>
 <p>下表的原生路数是外设实例数。定板时还要对具体封装做引脚复用、保留调试与上行接口，并核实每对管脚的 Fm+ 驱动能力。独立控制器可并行，但 DMA、驱动和任务调度仍要配合。</p>
 <div class="scroll" tabindex="0"><table><thead><tr><th scope="col">MCU</th><th scope="col">I²C 外设数</th><th scope="col">本案可用速率</th><th scope="col">落地取舍和证据</th></tr></thead><tbody>
-<tr><td>Espressif ESP32-PICO-V3</td><td>2</td><td>按 ESP-IDF：主机 SCL ≤400 kHz</td><td>已有 ESP32 可作备选台架，两路各接一颗开关，按 3+2 指。复用现有 ESP32 板时，先查第二路可用引脚和上拉。本案按 ESP-IDF 的主机 400 kHz 规格选型；原厂已标 NRND。<span class="evidence"><a href="https://documentation.espressif.com/esp32-pico_series_datasheet_en.pdf#page=1" title="espressif_ESP32-PICO_series.pdf · PDF p.1">p.1</a> <a href="https://documentation.espressif.com/esp32-pico_series_datasheet_en.pdf#page=28" title="espressif_ESP32-PICO_series.pdf · PDF p.28">p.28</a> <a href="https://documentation.espressif.com/esp32-pico_series_datasheet_en.pdf#page=29" title="espressif_ESP32-PICO_series.pdf · PDF p.29">p.29</a></span> <a href="https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/peripherals/i2c.html" target="_blank" rel="noopener noreferrer">ESP-IDF 主机时钟说明</a></td></tr>
+<tr><td>Espressif ESP32-PICO-V3</td><td>2</td><td>按 ESP-IDF：主机 SCL ≤400 kHz</td><td>读取板 A0 当前主控，两路各接一颗 TCA9546A，分为 3+3 支路。本案按 ESP-IDF 的主机 400 kHz 规格选型；原厂已标 NRND。<span class="evidence"><a href="https://documentation.espressif.com/esp32-pico_series_datasheet_en.pdf#page=1" title="espressif_ESP32-PICO_series.pdf · PDF p.1">p.1</a> <a href="https://documentation.espressif.com/esp32-pico_series_datasheet_en.pdf#page=28" title="espressif_ESP32-PICO_series.pdf · PDF p.28">p.28</a> <a href="https://documentation.espressif.com/esp32-pico_series_datasheet_en.pdf#page=29" title="espressif_ESP32-PICO_series.pdf · PDF p.29">p.29</a></span> <a href="https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/peripherals/i2c.html" target="_blank" rel="noopener noreferrer">ESP-IDF 主机时钟说明</a></td></tr>
 <tr><td>ST STM32U595/U599</td><td>6</td><td>6 路 Fm+，1 MHz</td><td>7 × 7 mm UFBGA132、WLCSP150 和 LQFP144 都可引出六路；LQFP100 适合五路配置。见<a href="#arduino">封装和球位对照</a>。<span class="evidence"><a href="https://www.stmcu.jp/wp/wp-content/uploads/2023/02/DS13633_Rev2.pdf#page=2" title="st_STM32U59xxx_DS13633.pdf · PDF p.2">p.2</a> <a href="https://www.stmcu.jp/wp/wp-content/uploads/2023/02/DS13633_Rev2.pdf#page=85" title="st_STM32U59xxx_DS13633.pdf · PDF p.85">p.85</a> <a href="https://www.stmcu.jp/wp/wp-content/uploads/2023/02/DS13633_Rev2.pdf#page=99" title="st_STM32U59xxx_DS13633.pdf · PDF p.99">p.99</a> <a href="https://www.stmcu.jp/wp/wp-content/uploads/2023/02/DS13633_Rev2.pdf#page=103" title="st_STM32U59xxx_DS13633.pdf · PDF p.103">p.103</a> <a href="https://www.stmcu.jp/wp/wp-content/uploads/2023/02/DS13633_Rev2.pdf#page=113" title="st_STM32U59xxx_DS13633.pdf · PDF p.113">p.113</a> <a href="https://www.stmcu.jp/wp/wp-content/uploads/2023/02/DS13633_Rev2.pdf#page=158" title="st_STM32U59xxx_DS13633.pdf · PDF p.158">p.158</a> <a href="https://www.stmcu.jp/wp/wp-content/uploads/2023/02/DS13633_Rev2.pdf#page=159" title="st_STM32U59xxx_DS13633.pdf · PDF p.159">p.159</a> <a href="https://www.stmcu.jp/wp/wp-content/uploads/2023/02/DS13633_Rev2.pdf#page=160" title="st_STM32U59xxx_DS13633.pdf · PDF p.160">p.160</a> <a href="https://www.stmcu.jp/wp/wp-content/uploads/2023/02/DS13633_Rev2.pdf#page=162" title="st_STM32U59xxx_DS13633.pdf · PDF p.162">p.162</a></span></td></tr>
 <tr><td>ST STM32G474</td><td>4</td><td>4 路 Fm+，1 MHz</td><td>STM32duino 3.1.0 提供 NUCLEO-G474RE 目标，四组引脚仍需实配。本案少一条原生总线：例如 3 指独立，余两指共享第 4 路的二选支路（可再留一个扩展分支），有现成 G4 生态时可用。<span class="evidence"><a href="https://www.stmcu.jp/wp/wp-content/uploads/2019/05/DS12288_Rev5.pdf#page=2" title="st_STM32G474_DS12288.pdf · PDF p.2">p.2</a> <a href="https://www.stmcu.jp/wp/wp-content/uploads/2019/05/DS12288_Rev5.pdf#page=41" title="st_STM32G474_DS12288.pdf · PDF p.41">p.41</a></span></td></tr>
 <tr><td>NXP LPC55S6x（LPC55S69 等）</td><td>8 个可配 Flexcomm 0–7</td><td>Fm+ 1 MHz 适用指定引脚；3.4 MHz 是指定 pads 的 slave</td><td>VFBGA59 可引出六组引脚，见上方实配表；Fm+ 采用原厂专用引脚。<span class="evidence"><a href="https://www.nxp.com/docs/en/data-sheet/LPC55S6x.pdf#page=2" title="nxp_LPC55S6x.pdf · PDF p.2">p.2</a> <a href="https://www.nxp.com/docs/en/data-sheet/LPC55S6x.pdf#page=45" title="nxp_LPC55S6x.pdf · PDF p.45">p.45</a> <a href="https://www.nxp.com/docs/en/data-sheet/LPC55S6x.pdf#page=61" title="nxp_LPC55S6x.pdf · PDF p.61">p.61</a> <a href="https://www.nxp.com/docs/en/data-sheet/LPC55S6x.pdf#page=88" title="nxp_LPC55S6x.pdf · PDF p.88">p.88</a></span></td></tr>
@@ -322,8 +385,14 @@ figcaption{color:var(--muted);font-size:.83em;line-height:1.5}.assembly{margin:1
 </section>
 <section id="sources"><h2>原厂 PDF 档案</h2>
 <p>公开版链接直达原厂。表内“p.”、字节数和 SHA-256 对应调研时下载的版本；原厂更新文件时，以章节和修订号为准。样机按文末项目验收。</p>
-<p><strong>已归档 62 份、共 7,237 页。</strong>11 月 21 日追加 4 份 ST 原厂资料：DS13633 Rev.3、AN2606、AN4879 和 UM2861。11 月 20 日补充五份原厂编程、测角和封装资料。首版 53 份已独立复核逐页渲染、文件头/尾、页数、链接和 SHA-256。独立复取当时的 58 份，42 份的 SHA-256 完全一致；16 份 MPS 文件去掉下载时生成的 CreationDate 字段以后逐字节一致。11 月 20 日新增的 147 页已逐页提取、渲染和复核；TI SBAA463A 第 20 页图像解码有回退提示，复开查看曲线和界面图可正常显示。Infineon TLI493D-W2BW / AS5200L / AS5601 的原厂 PDF 有 Poppler 附属流提示，RT1170 有内嵌字体提示；正文全部可读。STM32G474 档案为 ST 日本站发布的 Rev.5 日文版，STM32U59xxx 原档为该站归档的 Rev.2 英文版；小封装和 USB 专节使用 Rev.3。四款 MPS 规格书的索取事项见文末。</p>
+<p><strong>已归档 68 份、共 7,466 页。</strong>扩展器增加 6 份 TI 原厂资料（229 页）。11 月 21 日追加 4 份 ST 原厂资料：DS13633 Rev.3、AN2606、AN4879 和 UM2861。11 月 20 日补充五份原厂编程、测角和封装资料。首版 53 份已独立复核逐页渲染、文件头/尾、页数、链接和 SHA-256。独立复取当时的 58 份，42 份的 SHA-256 完全一致；16 份 MPS 文件去掉下载时生成的 CreationDate 字段以后逐字节一致。11 月 20 日新增的 147 页已逐页提取、渲染和复核；TI SBAA463A 第 20 页图像解码有回退提示，复开查看曲线和界面图可正常显示。Infineon TLI493D-W2BW / AS5200L / AS5601 的原厂 PDF 有 Poppler 附属流提示，RT1170 有内嵌字体提示；正文全部可读。STM32G474 档案为 ST 日本站发布的 Rev.5 日文版，STM32U59xxx 原档为该站归档的 Rev.2 英文版；小封装和 USB 专节使用 Rev.3。四款 MPS 规格书的索取事项见文末。</p>
 <details><summary>PDF 清单与校验值</summary><div class="scroll" tabindex="0"><table><thead><tr><th scope="col">本地文件</th><th scope="col">页数</th><th scope="col">字节</th><th scope="col">SHA-256</th><th scope="col">来源</th></tr></thead><tbody>
+<tr><td><a href="https://www.ti.com/lit/ds/symlink/tca9546a.pdf">ti_TCA9546A.pdf</a></td><td>31</td><td>680,432</td><td><span class="hash">6a776613b4fa2967d58b69abf78226d249a28936472312659325e4f3440cfb8b</span></td><td><a href="https://www.ti.com/lit/ds/symlink/tca9546a.pdf" target="_blank" rel="noopener">原厂下载</a></td></tr>
+<tr><td><a href="https://www.ti.com/lit/ds/symlink/tca9846.pdf">ti_TCA9846.pdf</a></td><td>35</td><td>1,317,784</td><td><span class="hash">f3bb51aa970fb314955817d335b418ddb66d171c3d04b1ac5a55c8d6295ad60a</span></td><td><a href="https://www.ti.com/lit/ds/symlink/tca9846.pdf" target="_blank" rel="noopener">原厂下载</a></td></tr>
+<tr><td><a href="https://www.ti.com/lit/ds/symlink/tca9848.pdf">ti_TCA9848.pdf</a></td><td>40</td><td>2,581,123</td><td><span class="hash">df8854322851b8b6c19265ee1d2fc935e3dd33289adacf7bff2aca05e75094e9</span></td><td><a href="https://www.ti.com/lit/ds/symlink/tca9848.pdf" target="_blank" rel="noopener">原厂下载</a></td></tr>
+<tr><td><a href="https://www.ti.com/lit/ds/symlink/tmux1109.pdf">ti_TMUX1109.pdf</a></td><td>40</td><td>2,019,306</td><td><span class="hash">3ad2e3414b5ab4317aca07c726e824f37f4bec103d900219e5a5288649fdba87</span></td><td><a href="https://www.ti.com/lit/ds/symlink/tmux1109.pdf" target="_blank" rel="noopener">原厂下载</a></td></tr>
+<tr><td><a href="https://www.ti.com/lit/ds/symlink/tmux1209.pdf">ti_TMUX1209.pdf</a></td><td>37</td><td>1,525,126</td><td><span class="hash">a717afc1524fe899a4693494e13a0944f2b742a7160b96bdfb2be6cb5b9ff170</span></td><td><a href="https://www.ti.com/lit/ds/symlink/tmux1209.pdf" target="_blank" rel="noopener">原厂下载</a></td></tr>
+<tr><td><a href="https://www.ti.com/lit/ds/symlink/tmux1309.pdf">ti_TMUX1309.pdf</a></td><td>46</td><td>2,877,270</td><td><span class="hash">d6b6e212254c2cfb2de0bbd541934ff6557dd2618be50735af9c68828fc72035</span></td><td><a href="https://www.ti.com/lit/ds/symlink/tmux1309.pdf" target="_blank" rel="noopener">原厂下载</a></td></tr>
 <tr><td><a href="https://www.st.com.cn/resource/en/datasheet/stm32u595zi.pdf">st_STM32U59xxx_DS13633_Rev3.pdf</a></td><td>385</td><td>4,777,952</td><td><span class="hash">1a6951f7fcbc7a72653a9610dbfc26e6ef45b0d0847be7b28cdc327abbd3051f</span></td><td><a href="https://www.st.com.cn/resource/en/datasheet/stm32u595zi.pdf" target="_blank" rel="noopener noreferrer">原厂下载</a></td></tr>
 <tr><td><a href="https://www.st.com.cn/resource/en/application_note/an2606-introduction-to-system-memory-boot-mode-on-stm32-mcus-stmicroelectronics.pdf">st_AN2606_Rev71.pdf</a></td><td>584</td><td>7,847,954</td><td><span class="hash">dd8e48f0ae32ae3fb168d9d8da72092714289b9e410d2fcb5964b10dfc86396a</span></td><td><a href="https://www.st.com.cn/resource/en/application_note/an2606-introduction-to-system-memory-boot-mode-on-stm32-mcus-stmicroelectronics.pdf" target="_blank" rel="noopener noreferrer">原厂下载</a></td></tr>
 <tr><td><a href="https://www.st.com.cn/resource/en/application_note/an4879-introduction-to-usb-hardware-and-pcb-guidelines-using-stm32-mcus-stmicroelectronics.pdf">st_AN4879_Rev13.pdf</a></td><td>30</td><td>1,218,605</td><td><span class="hash">a5fd13b823bcc1d60c118f5320aef16bc332fccdd9b8bc3f898c6096d2251959</span></td><td><a href="https://www.st.com.cn/resource/en/application_note/an4879-introduction-to-usb-hardware-and-pcb-guidelines-using-stm32-mcus-stmicroelectronics.pdf" target="_blank" rel="noopener noreferrer">原厂下载</a></td></tr>
@@ -390,6 +459,7 @@ figcaption{color:var(--muted);font-size:.83em;line-height:1.5}.assembly{margin:1
 </section>
 <section id="todo"><h2>后续待办事项</h2>
 <ol>
+<li><b>A0 上板：</b>先测外部供电、充电、电池低电压开机和 24 颗编码器满载，记录 3V3、最远端 3V3_ENC 与温升；逐路核对地址、RESET 恢复和 R/C，再验收 150 Hz 长时采样和实际有效帧数。PlatformIO 导入新引脚后，用原触点 USB-UART 夹具验收一键下载。</li>
 <li><b>采购与贴装：</b>核对 U595QII6Q、U595ZIY6QTR 的实际供货及掌板扇出，再提交嘉立创样板 DFM、BOM 和贴装审核。补查 A1335N 的国内 SMT 料号、采购表尚缺的实物图、MPS 四款 I²C 编码器的完整规格书；扩展调研带四地址的小封装高分辨率编码器。</li>
 <li><b>开发板与掌板：</b>用 NUCLEO-U5A5ZJ-Q 验收 CN15 的 DFU、首次烧录和复位切回 CDC。在掌板逐项验证 BOOT、USART2、SWD、Type‑C 正反插、C‑to‑C / A‑to‑C 及冷启动枚举。</li>
 <li><b>免按键台架验收：</b>接入 U595 样板，示波器记录夹具开闭串口、冷插拔、掉电和整套 BOOT0/NRST 时序。登记 DFU 序号和内部 Flash 接口，实测在空白片和应用异常两种状态下完成一键写入、读回、复位和 CDC 枚举。按实际晶振配置掌板应用时钟与 USB PHY，再记录成功次数与耗时。</li>
@@ -397,7 +467,7 @@ figcaption{color:var(--muted);font-size:.83em;line-height:1.5}.assembly{margin:1
 </ol>
 </section>
 </main>
-<footer>Golden Philosophy · 2026 年 11 月 21 日 · 关节测量方案预研</footer>
+<footer>Golden Philosophy · 2026 年 11 月 24 日 · 读取板 A0 与选型档案</footer>
 <script>
 (() => {
   "use strict";
@@ -412,17 +482,17 @@ figcaption{color:var(--muted);font-size:.83em;line-height:1.5}.assembly{margin:1
     const fingers = Number(byId("fingers").value), nodes = Number(byId("nodes").value);
     const topo = byId("topo").value, perDevice = Number(byId("clocks").value);
     const khz = Number(byId("khz").value), hz = Number(byId("hz").value);
-    const groups = topo === "native" ? 1 : Math.ceil(fingers / Number(topo));
+    const groups = topo === "native" ? 1 : Math.ceil(fingers / (topo === "gpio" ? 2 : Number(topo)));
     const last = byId("extra").value;
     const branchClocks = (nodes - 1) * perDevice + (last === "same" ? perDevice : Number(last));
-    const overhead = topo === "native" ? 0 : 18;
+    const overhead = topo === "native" || topo === "gpio" ? 0 : 18;
     const clocks = groups * (branchClocks + overhead);
     const sequential = fingers * (branchClocks + overhead) / khz;
     const period = 1000 / hz, minTime = clocks / khz;
     byId("calc-result").textContent =
       `${fingers * nodes} 节点 · 最忙总线 ${groups} 支路 · ${clocks} clocks · ${minTime.toFixed(3)} ms / ${period.toFixed(3)} ms · 占用 ${(100*minTime/period).toFixed(1)}%` +
       (minTime >= period ? "（纯总线达到或超出周期）" : "（仅 SCL 的理论下界）") +
-      `；全手顺序读下界 ${sequential.toFixed(3)} ms` +
+      `；整帧理论上限 ${(1000/minTime).toFixed(1)} Hz；顺序读下界 ${sequential.toFixed(3)} ms` +
       (khz === 1000 ? "；仅用于所有器件均支持 Fm+ 的组合。" : "。");
   }
   ids.forEach(id => byId(id).addEventListener("input", update));
